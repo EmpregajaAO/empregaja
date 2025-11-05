@@ -30,10 +30,10 @@ const candidateFormSchema = z.object({
 const employerFormSchema = z.object({
   employerName: z.string().trim().min(3, "Nome do empregador é obrigatório").max(100, "Nome muito longo"),
   companyName: z.string().trim().min(2, "Nome da empresa é obrigatório").max(200, "Nome muito longo"),
+  companySector: z.string().trim().min(3, "Ramo de atuação é obrigatório").max(200, "Descrição muito longa"),
   email: z.string().trim().email("Email inválido").max(255, "Email muito longo"),
   phone: z.string().trim().min(9, "Telefone inválido").max(20, "Telefone inválido"),
   city: z.string().trim().min(2, "Cidade é obrigatória").max(100, "Nome da cidade muito longo"),
-  companyDescription: z.string().trim().min(20, "Descreva sua empresa").max(1000, "Descrição muito longa"),
 });
 
 const Cadastro = () => {
@@ -61,10 +61,10 @@ const Cadastro = () => {
     defaultValues: {
       employerName: "",
       companyName: "",
+      companySector: "",
       email: "",
       phone: "",
       city: "",
-      companyDescription: "",
     },
   });
 
@@ -81,10 +81,10 @@ const Cadastro = () => {
   const onEmployerSubmit = (values: z.infer<typeof employerFormSchema>) => {
     toast({
       title: "Cadastro realizado!",
-      description: "Redirecionando para informações de pagamento...",
+      description: "Seu perfil de empregador foi criado com sucesso.",
     });
     setTimeout(() => {
-      navigate("/confirmacao-pagamento");
+      navigate("/");
     }, 1500);
   };
 
@@ -346,7 +346,7 @@ const Cadastro = () => {
                   <Alert>
                     <Info className="h-4 w-4" />
                     <AlertDescription>
-                      <strong>Privacidade:</strong> Suas informações pessoais (nome, nome da empresa e telefone) não serão visíveis publicamente. Elas só serão compartilhadas quando você agendar uma entrevista com um candidato.
+                      <strong>Cadastro Gratuito:</strong> O cadastro de empregador é totalmente gratuito. Suas informações pessoais (nome, nome da empresa e telefone) só serão compartilhadas com o candidato quando você decidir agendar uma entrevista.
                     </AlertDescription>
                   </Alert>
 
@@ -388,6 +388,20 @@ const Cadastro = () => {
                             )}
                           />
                         </div>
+
+                        <FormField
+                          control={employerForm.control}
+                          name="companySector"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Ramo de Atuação *</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Ex: Tecnologia, Construção, Saúde, Educação..." {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
                         <div className="grid md:grid-cols-2 gap-4">
                           <FormField
@@ -434,34 +448,8 @@ const Cadastro = () => {
                         />
                       </div>
 
-                      {/* Company Description */}
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-lg font-semibold">
-                          <Briefcase className="h-5 w-5 text-primary" />
-                          <h3>Sobre a Empresa</h3>
-                        </div>
-                        
-                        <FormField
-                          control={employerForm.control}
-                          name="companyDescription"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Descrição da Empresa *</FormLabel>
-                              <FormControl>
-                                <Textarea
-                                  placeholder="Descreva a sua empresa, o setor de atuação, missão e valores..."
-                                  rows={6}
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
                       <Button type="submit" size="lg" className="w-full">
-                        Criar Perfil de Empregador
+                        Criar Perfil de Empregador (Grátis)
                       </Button>
                     </form>
                   </Form>
