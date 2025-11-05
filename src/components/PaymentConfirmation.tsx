@@ -27,12 +27,39 @@ const PaymentConfirmation = () => {
           {/* Payment Information */}
           <div className="bg-secondary/50 rounded-lg p-6 space-y-4">
             <h3 className="font-semibold text-lg">Informação de Pagamento</h3>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Valor:</span>
-                <span className="text-2xl font-bold text-primary">1.000 Kz</span>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <h4 className="font-medium">Criação de Perfil</h4>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Valor:</span>
+                  <span className="text-2xl font-bold text-primary">1.000 Kz</span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Inclui criação do CV profissional que poderá baixar sempre que precisar
+                </p>
               </div>
-              <div className="flex flex-col gap-1 pt-2">
+              
+              <div className="border-t pt-4 space-y-2">
+                <h4 className="font-medium">Planos Mensais</h4>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex justify-between">
+                    <span>Conta Ativa:</span>
+                    <span className="font-semibold text-primary">500 Kz/mês</span>
+                  </li>
+                  <li className="text-xs text-muted-foreground pl-2">
+                    Mantém seu perfil visível aos empregadores
+                  </li>
+                  <li className="flex justify-between pt-2">
+                    <span>Conta Pro:</span>
+                    <span className="font-semibold text-accent">2.000 Kz/mês</span>
+                  </li>
+                  <li className="text-xs text-muted-foreground pl-2">
+                    Perfil destacado e mostrado em primeiro lugar aos empregadores
+                  </li>
+                </ul>
+              </div>
+
+              <div className="flex flex-col gap-1 pt-4 border-t">
                 <span className="text-sm text-muted-foreground">IBAN para transferência:</span>
                 <code className="bg-background px-3 py-2 rounded border text-sm font-mono">
                   {iban}
@@ -77,8 +104,8 @@ const PaymentConfirmation = () => {
 
           {/* Additional Info */}
           <div className="text-center text-sm text-muted-foreground pt-4 border-t">
-            <p>Após a confirmação do pagamento, o seu perfil ficará visível aos empregadores.</p>
-            <p className="pt-2">Taxa mensal de manutenção: <strong>500 Kz/mês</strong></p>
+            <p>Após a confirmação do pagamento, o seu perfil ficará ativo.</p>
+            <p className="pt-2">Escolha o plano mensal que melhor se adequa às suas necessidades.</p>
           </div>
         </CardContent>
       </Card>

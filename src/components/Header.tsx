@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Briefcase } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import angolaFlag from "@/assets/angola-flag.webp";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,9 +11,7 @@ const Header = () => {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2 font-bold text-xl">
-          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <Briefcase className="h-5 w-5 text-primary-foreground" />
-          </div>
+          <img src={angolaFlag} alt="Bandeira de Angola" className="h-8 w-8 rounded object-cover" />
           <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             EmpregaJá
           </span>
