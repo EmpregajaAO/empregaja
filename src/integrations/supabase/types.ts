@@ -14,13 +14,261 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      fontes_vagas: {
+        Row: {
+          ativa: boolean | null
+          configuracao: Json | null
+          created_at: string | null
+          frequencia_minutos: number
+          id: string
+          nome: string
+          proxima_coleta: string | null
+          tipo: string
+          ultima_coleta: string | null
+          updated_at: string | null
+          url: string
+        }
+        Insert: {
+          ativa?: boolean | null
+          configuracao?: Json | null
+          created_at?: string | null
+          frequencia_minutos?: number
+          id?: string
+          nome: string
+          proxima_coleta?: string | null
+          tipo: string
+          ultima_coleta?: string | null
+          updated_at?: string | null
+          url: string
+        }
+        Update: {
+          ativa?: boolean | null
+          configuracao?: Json | null
+          created_at?: string | null
+          frequencia_minutos?: number
+          id?: string
+          nome?: string
+          proxima_coleta?: string | null
+          tipo?: string
+          ultima_coleta?: string | null
+          updated_at?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
+      logs_coleta: {
+        Row: {
+          created_at: string | null
+          detalhes: Json | null
+          fonte_id: string
+          id: string
+          mensagem_erro: string | null
+          status: string
+          tempo_resposta_ms: number | null
+          vagas_atualizadas: number | null
+          vagas_duplicadas: number | null
+          vagas_novas: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          detalhes?: Json | null
+          fonte_id: string
+          id?: string
+          mensagem_erro?: string | null
+          status: string
+          tempo_resposta_ms?: number | null
+          vagas_atualizadas?: number | null
+          vagas_duplicadas?: number | null
+          vagas_novas?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          detalhes?: Json | null
+          fonte_id?: string
+          id?: string
+          mensagem_erro?: string | null
+          status?: string
+          tempo_resposta_ms?: number | null
+          vagas_atualizadas?: number | null
+          vagas_duplicadas?: number | null
+          vagas_novas?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "logs_coleta_fonte_id_fkey"
+            columns: ["fonte_id"]
+            isOneToOne: false
+            referencedRelation: "fontes_vagas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      municipios_angola: {
+        Row: {
+          created_at: string | null
+          id: string
+          nome: string
+          provincia_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          nome: string
+          provincia_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          nome?: string
+          provincia_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "municipios_angola_provincia_id_fkey"
+            columns: ["provincia_id"]
+            isOneToOne: false
+            referencedRelation: "provincias_angola"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      provincias_angola: {
+        Row: {
+          created_at: string | null
+          id: string
+          nome: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          nome: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
+      vagas: {
+        Row: {
+          ativa: boolean | null
+          canais_contato: Json | null
+          created_at: string | null
+          data_coleta: string
+          data_publicacao_origem: string | null
+          descricao: string
+          empresa: string
+          hash_dedup: string
+          id: string
+          link_origem: string
+          localidade: string
+          moeda: string | null
+          provincia_id: string | null
+          requisitos: string[] | null
+          salario_max: number | null
+          salario_min: number | null
+          tipo_contrato: string
+          titulo_vaga: string
+          updated_at: string | null
+        }
+        Insert: {
+          ativa?: boolean | null
+          canais_contato?: Json | null
+          created_at?: string | null
+          data_coleta?: string
+          data_publicacao_origem?: string | null
+          descricao: string
+          empresa: string
+          hash_dedup: string
+          id?: string
+          link_origem: string
+          localidade: string
+          moeda?: string | null
+          provincia_id?: string | null
+          requisitos?: string[] | null
+          salario_max?: number | null
+          salario_min?: number | null
+          tipo_contrato: string
+          titulo_vaga: string
+          updated_at?: string | null
+        }
+        Update: {
+          ativa?: boolean | null
+          canais_contato?: Json | null
+          created_at?: string | null
+          data_coleta?: string
+          data_publicacao_origem?: string | null
+          descricao?: string
+          empresa?: string
+          hash_dedup?: string
+          id?: string
+          link_origem?: string
+          localidade?: string
+          moeda?: string | null
+          provincia_id?: string | null
+          requisitos?: string[] | null
+          salario_max?: number | null
+          salario_min?: number | null
+          tipo_contrato?: string
+          titulo_vaga?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vagas_provincia_id_fkey"
+            columns: ["provincia_id"]
+            isOneToOne: false
+            referencedRelation: "provincias_angola"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vagas_fontes: {
+        Row: {
+          data_coleta: string
+          fonte_id: string
+          id: string
+          vaga_id: string
+        }
+        Insert: {
+          data_coleta?: string
+          fonte_id: string
+          id?: string
+          vaga_id: string
+        }
+        Update: {
+          data_coleta?: string
+          fonte_id?: string
+          id?: string
+          vaga_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vagas_fontes_fonte_id_fkey"
+            columns: ["fonte_id"]
+            isOneToOne: false
+            referencedRelation: "fontes_vagas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vagas_fontes_vaga_id_fkey"
+            columns: ["vaga_id"]
+            isOneToOne: false
+            referencedRelation: "vagas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      gerar_hash_dedup: {
+        Args: { p_empresa: string; p_localidade: string; p_titulo: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
