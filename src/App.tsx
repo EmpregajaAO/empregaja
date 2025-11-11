@@ -8,6 +8,7 @@ import Candidatos from "./pages/Candidatos";
 import Empregadores from "./pages/Empregadores";
 import Cursos from "./pages/Cursos";
 import Vagas from "./pages/Vagas";
+import VagasAgregadas from "./pages/VagasAgregadas";
 import Sobre from "./pages/Sobre";
 import Cadastro from "./pages/Cadastro";
 import PaymentConfirmation from "./components/PaymentConfirmation";
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/empregadores" element={<Empregadores />} />
           <Route path="/cursos" element={<Cursos />} />
           <Route path="/vagas" element={<Vagas />} />
+          <Route path="/vagas-agregadas" element={<VagasAgregadas />} />
           <Route path="/sobre" element={<Sobre />} />
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/confirmacao-pagamento" element={<PaymentConfirmation />} />
