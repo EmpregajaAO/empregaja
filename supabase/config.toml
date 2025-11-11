@@ -1,1 +1,7 @@
 project_id = "qjoyyevmdfbdcbhekisy"
+
+[functions.chat-assistant]
+verify_jwt = false
+
+[functions.agregar-vagas]
+verify_jwt = false
