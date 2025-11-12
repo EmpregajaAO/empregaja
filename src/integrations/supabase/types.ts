@@ -14,6 +14,229 @@ export type Database = {
   }
   public: {
     Tables: {
+      candidatos: {
+        Row: {
+          created_at: string | null
+          cv_url: string | null
+          data_expiracao_conta: string | null
+          id: string
+          numero_candidato: string
+          perfil_id: string
+          tipo_conta: Database["public"]["Enums"]["tipo_conta_candidato"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          cv_url?: string | null
+          data_expiracao_conta?: string | null
+          id?: string
+          numero_candidato: string
+          perfil_id: string
+          tipo_conta?:
+            | Database["public"]["Enums"]["tipo_conta_candidato"]
+            | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          cv_url?: string | null
+          data_expiracao_conta?: string | null
+          id?: string
+          numero_candidato?: string
+          perfil_id?: string
+          tipo_conta?:
+            | Database["public"]["Enums"]["tipo_conta_candidato"]
+            | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidatos_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: true
+            referencedRelation: "perfis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chats: {
+        Row: {
+          candidato_id: string
+          created_at: string | null
+          empregador_id: string
+          id: string
+          iniciado_por_empregador: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          candidato_id: string
+          created_at?: string | null
+          empregador_id: string
+          id?: string
+          iniciado_por_empregador?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          candidato_id?: string
+          created_at?: string | null
+          empregador_id?: string
+          id?: string
+          iniciado_por_empregador?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chats_candidato_id_fkey"
+            columns: ["candidato_id"]
+            isOneToOne: false
+            referencedRelation: "candidatos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chats_empregador_id_fkey"
+            columns: ["empregador_id"]
+            isOneToOne: false
+            referencedRelation: "empregadores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comprovativos_pagamento: {
+        Row: {
+          candidato_id: string
+          comprovativo_url: string
+          created_at: string | null
+          dados_ocr: Json | null
+          id: string
+          observacoes: string | null
+          status: Database["public"]["Enums"]["status_pagamento"] | null
+          tipo_servico: string
+          updated_at: string | null
+          valor: number
+        }
+        Insert: {
+          candidato_id: string
+          comprovativo_url: string
+          created_at?: string | null
+          dados_ocr?: Json | null
+          id?: string
+          observacoes?: string | null
+          status?: Database["public"]["Enums"]["status_pagamento"] | null
+          tipo_servico: string
+          updated_at?: string | null
+          valor: number
+        }
+        Update: {
+          candidato_id?: string
+          comprovativo_url?: string
+          created_at?: string | null
+          dados_ocr?: Json | null
+          id?: string
+          observacoes?: string | null
+          status?: Database["public"]["Enums"]["status_pagamento"] | null
+          tipo_servico?: string
+          updated_at?: string | null
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comprovativos_pagamento_candidato_id_fkey"
+            columns: ["candidato_id"]
+            isOneToOne: false
+            referencedRelation: "candidatos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      empregadores: {
+        Row: {
+          created_at: string | null
+          id: string
+          nome_empresa: string
+          perfil_id: string
+          ramo_atuacao: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          nome_empresa: string
+          perfil_id: string
+          ramo_atuacao: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          nome_empresa?: string
+          perfil_id?: string
+          ramo_atuacao?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "empregadores_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: true
+            referencedRelation: "perfis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      entrevistas: {
+        Row: {
+          candidato_id: string
+          created_at: string | null
+          data_hora: string
+          empregador_id: string
+          id: string
+          local_ou_link: string | null
+          notas: string | null
+          status: Database["public"]["Enums"]["status_entrevista"] | null
+          tipo: Database["public"]["Enums"]["tipo_entrevista"]
+          updated_at: string | null
+        }
+        Insert: {
+          candidato_id: string
+          created_at?: string | null
+          data_hora: string
+          empregador_id: string
+          id?: string
+          local_ou_link?: string | null
+          notas?: string | null
+          status?: Database["public"]["Enums"]["status_entrevista"] | null
+          tipo: Database["public"]["Enums"]["tipo_entrevista"]
+          updated_at?: string | null
+        }
+        Update: {
+          candidato_id?: string
+          created_at?: string | null
+          data_hora?: string
+          empregador_id?: string
+          id?: string
+          local_ou_link?: string | null
+          notas?: string | null
+          status?: Database["public"]["Enums"]["status_entrevista"] | null
+          tipo?: Database["public"]["Enums"]["tipo_entrevista"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entrevistas_candidato_id_fkey"
+            columns: ["candidato_id"]
+            isOneToOne: false
+            referencedRelation: "candidatos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entrevistas_empregador_id_fkey"
+            columns: ["empregador_id"]
+            isOneToOne: false
+            referencedRelation: "empregadores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fontes_vagas: {
         Row: {
           ativa: boolean | null
@@ -103,6 +326,48 @@ export type Database = {
           },
         ]
       }
+      mensagens: {
+        Row: {
+          chat_id: string
+          conteudo: string
+          created_at: string | null
+          id: string
+          lida: boolean | null
+          remetente_id: string
+        }
+        Insert: {
+          chat_id: string
+          conteudo: string
+          created_at?: string | null
+          id?: string
+          lida?: boolean | null
+          remetente_id: string
+        }
+        Update: {
+          chat_id?: string
+          conteudo?: string
+          created_at?: string | null
+          id?: string
+          lida?: boolean | null
+          remetente_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mensagens_chat_id_fkey"
+            columns: ["chat_id"]
+            isOneToOne: false
+            referencedRelation: "chats"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mensagens_remetente_id_fkey"
+            columns: ["remetente_id"]
+            isOneToOne: false
+            referencedRelation: "perfis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       municipios_angola: {
         Row: {
           created_at: string | null
@@ -131,6 +396,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      perfis: {
+        Row: {
+          created_at: string | null
+          id: string
+          nome_completo: string
+          telefone: string | null
+          tipo_utilizador: Database["public"]["Enums"]["tipo_utilizador"]
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          nome_completo: string
+          telefone?: string | null
+          tipo_utilizador: Database["public"]["Enums"]["tipo_utilizador"]
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          nome_completo?: string
+          telefone?: string | null
+          tipo_utilizador?: Database["public"]["Enums"]["tipo_utilizador"]
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       provincias_angola: {
         Row: {
@@ -260,6 +555,42 @@ export type Database = {
           },
         ]
       }
+      visualizacoes_perfil: {
+        Row: {
+          candidato_id: string
+          empregador_id: string
+          id: string
+          visualizado_em: string | null
+        }
+        Insert: {
+          candidato_id: string
+          empregador_id: string
+          id?: string
+          visualizado_em?: string | null
+        }
+        Update: {
+          candidato_id?: string
+          empregador_id?: string
+          id?: string
+          visualizado_em?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visualizacoes_perfil_candidato_id_fkey"
+            columns: ["candidato_id"]
+            isOneToOne: false
+            referencedRelation: "candidatos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "visualizacoes_perfil_empregador_id_fkey"
+            columns: ["empregador_id"]
+            isOneToOne: false
+            referencedRelation: "empregadores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -269,9 +600,14 @@ export type Database = {
         Args: { p_empresa: string; p_localidade: string; p_titulo: string }
         Returns: string
       }
+      gerar_numero_candidato: { Args: never; Returns: string }
     }
     Enums: {
-      [_ in never]: never
+      status_entrevista: "agendada" | "confirmada" | "cancelada" | "realizada"
+      status_pagamento: "pendente" | "aprovado" | "rejeitado"
+      tipo_conta_candidato: "basico" | "ativo" | "pro"
+      tipo_entrevista: "presencial" | "virtual"
+      tipo_utilizador: "candidato" | "empregador"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -398,6 +734,12 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      status_entrevista: ["agendada", "confirmada", "cancelada", "realizada"],
+      status_pagamento: ["pendente", "aprovado", "rejeitado"],
+      tipo_conta_candidato: ["basico", "ativo", "pro"],
+      tipo_entrevista: ["presencial", "virtual"],
+      tipo_utilizador: ["candidato", "empregador"],
+    },
   },
 } as const

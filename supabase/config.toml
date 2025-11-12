@@ -3,5 +3,8 @@ project_id = "qjoyyevmdfbdcbhekisy"
 [functions.chat-assistant]
 verify_jwt = false
 
+[functions.processar-comprovativo]
+verify_jwt = true
+
 [functions.agregar-vagas]
 verify_jwt = false
