@@ -279,6 +279,47 @@ export type Database = {
         }
         Relationships: []
       }
+      funcionarios: {
+        Row: {
+          ativo: boolean | null
+          cargo: string
+          created_at: string | null
+          data_admissao: string
+          id: string
+          perfil_id: string
+          salario_base: number
+          updated_at: string | null
+        }
+        Insert: {
+          ativo?: boolean | null
+          cargo: string
+          created_at?: string | null
+          data_admissao?: string
+          id?: string
+          perfil_id: string
+          salario_base: number
+          updated_at?: string | null
+        }
+        Update: {
+          ativo?: boolean | null
+          cargo?: string
+          created_at?: string | null
+          data_admissao?: string
+          id?: string
+          perfil_id?: string
+          salario_base?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "funcionarios_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: true
+            referencedRelation: "perfis"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       logs_coleta: {
         Row: {
           created_at: string | null
@@ -397,33 +438,75 @@ export type Database = {
           },
         ]
       }
+      notificacoes_push: {
+        Row: {
+          data_envio: string | null
+          id: string
+          lida: boolean | null
+          mensagem: string
+          metadados: Json | null
+          tipo: string
+          titulo: string
+          user_id: string | null
+        }
+        Insert: {
+          data_envio?: string | null
+          id?: string
+          lida?: boolean | null
+          mensagem: string
+          metadados?: Json | null
+          tipo: string
+          titulo: string
+          user_id?: string | null
+        }
+        Update: {
+          data_envio?: string | null
+          id?: string
+          lida?: boolean | null
+          mensagem?: string
+          metadados?: Json | null
+          tipo?: string
+          titulo?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       perfis: {
         Row: {
           created_at: string | null
+          data_validacao: string | null
           id: string
           nome_completo: string
+          status_validacao: string | null
           telefone: string | null
           tipo_utilizador: Database["public"]["Enums"]["tipo_utilizador"]
           updated_at: string | null
           user_id: string
+          validado_por: string | null
         }
         Insert: {
           created_at?: string | null
+          data_validacao?: string | null
           id?: string
           nome_completo: string
+          status_validacao?: string | null
           telefone?: string | null
           tipo_utilizador: Database["public"]["Enums"]["tipo_utilizador"]
           updated_at?: string | null
           user_id: string
+          validado_por?: string | null
         }
         Update: {
           created_at?: string | null
+          data_validacao?: string | null
           id?: string
           nome_completo?: string
+          status_validacao?: string | null
           telefone?: string | null
           tipo_utilizador?: Database["public"]["Enums"]["tipo_utilizador"]
           updated_at?: string | null
           user_id?: string
+          validado_por?: string | null
         }
         Relationships: []
       }
@@ -442,6 +525,83 @@ export type Database = {
           created_at?: string | null
           id?: string
           nome?: string
+        }
+        Relationships: []
+      }
+      salarios: {
+        Row: {
+          ano: number
+          bonificacoes: number | null
+          created_at: string | null
+          data_pagamento: string | null
+          deducoes: number | null
+          funcionario_id: string
+          id: string
+          mes: number
+          observacoes: string | null
+          status: string | null
+          updated_at: string | null
+          valor: number
+          valor_liquido: number
+        }
+        Insert: {
+          ano: number
+          bonificacoes?: number | null
+          created_at?: string | null
+          data_pagamento?: string | null
+          deducoes?: number | null
+          funcionario_id: string
+          id?: string
+          mes: number
+          observacoes?: string | null
+          status?: string | null
+          updated_at?: string | null
+          valor: number
+          valor_liquido: number
+        }
+        Update: {
+          ano?: number
+          bonificacoes?: number | null
+          created_at?: string | null
+          data_pagamento?: string | null
+          deducoes?: number | null
+          funcionario_id?: string
+          id?: string
+          mes?: number
+          observacoes?: string | null
+          status?: string | null
+          updated_at?: string | null
+          valor?: number
+          valor_liquido?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "salarios_funcionario_id_fkey"
+            columns: ["funcionario_id"]
+            isOneToOne: false
+            referencedRelation: "funcionarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -601,8 +761,16 @@ export type Database = {
         Returns: string
       }
       gerar_numero_candidato: { Args: never; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
+      app_role: "admin" | "funcionario" | "candidato" | "empregador"
       status_entrevista: "agendada" | "confirmada" | "cancelada" | "realizada"
       status_pagamento: "pendente" | "aprovado" | "rejeitado"
       tipo_conta_candidato: "basico" | "ativo" | "pro"
@@ -735,6 +903,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "funcionario", "candidato", "empregador"],
       status_entrevista: ["agendada", "confirmada", "cancelada", "realizada"],
       status_pagamento: ["pendente", "aprovado", "rejeitado"],
       tipo_conta_candidato: ["basico", "ativo", "pro"],

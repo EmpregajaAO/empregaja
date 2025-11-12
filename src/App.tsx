@@ -14,6 +14,7 @@ import PerfilCandidato from "./pages/PerfilCandidato";
 import Privacidade from "./pages/Privacidade";
 import Sobre from "./pages/Sobre";
 import Cadastro from "./pages/Cadastro";
+import Admin from "./pages/Admin";
 import PaymentConfirmation from "./components/PaymentConfirmation";
 import NotFound from "./pages/NotFound";
 
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/privacidade" element={<Privacidade />} />
           <Route path="/sobre" element={<Sobre />} />
           <Route path="/cadastro" element={<Cadastro />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="/confirmacao-pagamento" element={<PaymentConfirmation />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
