@@ -11,6 +11,8 @@ import Cursos from "./pages/Cursos";
 import Vagas from "./pages/Vagas";
 import VagasAgregadas from "./pages/VagasAgregadas";
 import PerfilCandidato from "./pages/PerfilCandidato";
+import PerfilEmpregador from "./pages/PerfilEmpregador";
+import SalaDeAula from "./pages/SalaDeAula";
 import Privacidade from "./pages/Privacidade";
 import Sobre from "./pages/Sobre";
 import Cadastro from "./pages/Cadastro";
@@ -34,6 +36,8 @@ const App = () => (
           <Route path="/vagas" element={<Vagas />} />
           <Route path="/vagas-agregadas" element={<VagasAgregadas />} />
           <Route path="/perfil-candidato" element={<PerfilCandidato />} />
+          <Route path="/perfil-empregador" element={<PerfilEmpregador />} />
+          <Route path="/sala-de-aula/:courseId" element={<SalaDeAula />} />
           <Route path="/privacidade" element={<Privacidade />} />
           <Route path="/sobre" element={<Sobre />} />
           <Route path="/cadastro" element={<Cadastro />} />

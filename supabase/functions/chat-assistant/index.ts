@@ -12,27 +12,15 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const { messages, context } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY não está configurada");
     }
 
-    console.log("Enviando mensagens para Lovable AI:", messages.length);
-
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { 
-            role: "system", 
-            content: `És um assistente virtual do EmpregaJá, uma plataforma de emprego em Angola. 
+    // Determinar o prompt do sistema baseado no contexto
+    let systemPrompt = `És um assistente virtual do EmpregaJá, uma plataforma de emprego em Angola. 
 
 INFORMAÇÕES IMPORTANTES DA PLATAFORMA:
 - Preços para Candidatos: Criação de Perfil (1000 Kz), Conta Ativa (500 Kz/mês), Conta Pro (2000 Kz/mês)
@@ -48,11 +36,34 @@ RESPONDE SEMPRE:
 - Com informações precisas da plataforma
 - Não inventes informações que não estejam aqui
 - Sugere consultar as páginas específicas quando necessário (Cursos, Vagas, Sobre, etc.)
-- És profissional, amigável e prestativo` 
+- És profissional, amigável e prestativo`;
+
+    // Se for contexto de sala de aula, usar prompt específico para Professor Emprega Já
+    if (context?.systemPrompt) {
+      systemPrompt = context.systemPrompt;
+    }
+
+    console.log("Enviando mensagens para Lovable AI:", messages.length);
+
+    // Determinar se deve usar streaming ou não
+    const useStreaming = context?.streaming !== false;
+
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          { 
+            role: "system", 
+            content: systemPrompt 
           },
           ...messages,
         ],
-        stream: true,
+        stream: useStreaming,
       }),
     });
 
@@ -77,9 +88,21 @@ RESPONDE SEMPRE:
       });
     }
 
-    return new Response(response.body, {
-      headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
-    });
+    // Se usar streaming, retornar o stream
+    if (context?.streaming !== false) {
+      return new Response(response.body, {
+        headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
+      });
+    }
+
+    // Se não usar streaming, retornar JSON direto
+    const data = await response.json();
+    const assistantMessage = data.choices[0].message.content;
+
+    return new Response(
+      JSON.stringify({ response: assistantMessage }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   } catch (error) {
     console.error("Erro no chat assistant:", error);
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Erro desconhecido" }), {
