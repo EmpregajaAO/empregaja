@@ -50,6 +50,16 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        panel: {
+          profile: "hsl(var(--panel-profile))",
+          "profile-foreground": "hsl(var(--panel-profile-foreground))",
+          curriculum: "hsl(var(--panel-curriculum))",
+          "curriculum-foreground": "hsl(var(--panel-curriculum-foreground))",
+          access: "hsl(var(--panel-access))",
+          "access-foreground": "hsl(var(--panel-access-foreground))",
+          courses: "hsl(var(--panel-courses))",
+          "courses-foreground": "hsl(var(--panel-courses-foreground))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
