@@ -10,6 +10,45 @@ import testimonial1 from "@/assets/testimonial-1.jpg";
 import testimonial2 from "@/assets/testimonial-2.jpg";
 import coursesPlaceholder from "@/assets/courses-placeholder.jpg";
 
+const testimonials = [
+  {
+    name: "Maria Silva",
+    role: "Gestora de Projetos, Luanda",
+    text: "Encontrei minha oportunidade de sonho em menos de 2 semanas! A plataforma é muito fácil de usar e o CV gerado automaticamente impressionou os recrutadores.",
+    image: testimonial1
+  },
+  {
+    name: "João Costa",
+    role: "Desenvolvedor Web, Benguela",
+    text: "Como empregador, consigo encontrar candidatos qualificados rapidamente. O sistema de perfis profissionais facilita muito o processo de recrutamento.",
+    image: testimonial2
+  },
+  {
+    name: "Ana Fernandes",
+    role: "Designer Gráfica, Luanda",
+    text: "A plataforma transformou minha carreira! Consegui três entrevistas na primeira semana e hoje trabalho na empresa dos meus sonhos.",
+    image: testimonial1
+  },
+  {
+    name: "Pedro Santos",
+    role: "Engenheiro Civil, Huambo",
+    text: "Excelente sistema de busca. Como recrutador, economizo muito tempo encontrando candidatos com as qualificações exatas que preciso.",
+    image: testimonial2
+  },
+  {
+    name: "Carla Mendes",
+    role: "Contadora, Benguela",
+    text: "O processo de cadastro é super simples e o gerador de CV automático é fantástico. Recomendo para todos os profissionais em Angola!",
+    image: testimonial1
+  },
+  {
+    name: "Miguel Teixeira",
+    role: "Gestor de TI, Luanda",
+    text: "Encontrei profissionais altamente qualificados em tempo recorde. A plataforma realmente conecta talento com oportunidade.",
+    image: testimonial2
+  }
+];
+
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
@@ -226,58 +265,43 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Depoimentos */}
-        <section className="py-20">
+        {/* Testimonials Carousel */}
+        <section className="py-20 bg-gradient-subtle">
           <div className="container">
             <div className="text-center mb-16 space-y-4">
-              <h2 className="text-foreground">O Que Dizem Sobre Nós</h2>
+              <h2 className="text-foreground">O que dizem sobre nós</h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Histórias de sucesso de quem encontrou oportunidades através da plataforma
+                Histórias de sucesso de profissionais que encontraram suas oportunidades através da nossa plataforma
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              <Card className="hover:shadow-medium transition-shadow">
-                <CardHeader>
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={testimonial1}
-                      alt="Maria Silva, profissional satisfeita"
-                      className="h-16 w-16 rounded-full object-cover"
-                    />
-                    <div>
-                      <CardTitle className="text-lg">Maria Silva</CardTitle>
-                      <CardDescription>Marketing Manager</CardDescription>
+            <div className="relative max-w-6xl mx-auto">
+              <div className="overflow-hidden">
+                <div className="flex animate-[scroll_40s_linear_infinite] hover:[animation-play-state:paused]">
+                  {[...testimonials, ...testimonials].map((testimonial, index) => (
+                    <div key={index} className="flex-shrink-0 w-[400px] mx-4">
+                      <Card className="h-full bg-gradient-to-br from-card via-card to-primary/5 hover:shadow-glow transition-all">
+                        <CardHeader>
+                          <div className="flex items-start gap-4">
+                            <img
+                              src={testimonial.image}
+                              alt={testimonial.name}
+                              className="w-16 h-16 rounded-full object-cover border-2 border-primary/20"
+                            />
+                            <div className="flex-1">
+                              <CardTitle className="text-lg">{testimonial.name}</CardTitle>
+                              <CardDescription>{testimonial.role}</CardDescription>
+                            </div>
+                          </div>
+                          <CardDescription className="text-base leading-relaxed pt-4">
+                            "{testimonial.text}"
+                          </CardDescription>
+                        </CardHeader>
+                      </Card>
                     </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    "O EmpregaJá mudou minha vida profissional. Criei meu perfil em minutos e em menos de uma semana já tinha entrevistas agendadas. Recomendo!"
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-medium transition-shadow">
-                <CardHeader>
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={testimonial2}
-                      alt="João Costa, profissional satisfeito"
-                      className="h-16 w-16 rounded-full object-cover"
-                    />
-                    <div>
-                      <CardTitle className="text-lg">João Costa</CardTitle>
-                      <CardDescription>Gestor de Vendas</CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    "Plataforma excelente! O CV gerado automaticamente é muito profissional. Consegui meu emprego atual graças ao EmpregaJá."
-                  </p>
-                </CardContent>
-              </Card>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
