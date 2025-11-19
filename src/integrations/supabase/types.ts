@@ -1278,7 +1278,71 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      fontes_publicas: {
+        Row: {
+          source_types: number | null
+          total_active_sources: number | null
+        }
+        Relationships: []
+      }
+      public_job_stats: {
+        Row: {
+          collection_date: string | null
+          total_new_jobs: number | null
+          total_sources: number | null
+        }
+        Relationships: []
+      }
+      student_assessment_questions: {
+        Row: {
+          assessment_id: string | null
+          explanation: string | null
+          id: string | null
+          option_a: string | null
+          option_b: string | null
+          option_c: string | null
+          option_d: string | null
+          order_number: number | null
+          points: number | null
+          question_text: string | null
+          question_type: string | null
+        }
+        Insert: {
+          assessment_id?: string | null
+          explanation?: string | null
+          id?: string | null
+          option_a?: string | null
+          option_b?: string | null
+          option_c?: string | null
+          option_d?: string | null
+          order_number?: number | null
+          points?: number | null
+          question_text?: string | null
+          question_type?: string | null
+        }
+        Update: {
+          assessment_id?: string | null
+          explanation?: string | null
+          id?: string | null
+          option_a?: string | null
+          option_b?: string | null
+          option_c?: string | null
+          option_d?: string | null
+          order_number?: number | null
+          points?: number | null
+          question_text?: string | null
+          question_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_questions_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "course_assessments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       calculate_course_progress: {
