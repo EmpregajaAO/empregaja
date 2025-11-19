@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { CheckCircle2, FileText, Users, Briefcase } from "lucide-react";
+import { CheckCircle2, FileText, Users, Briefcase, MessageCircle } from "lucide-react";
 
 const Candidatos = () => {
   return (
@@ -55,8 +55,17 @@ const Candidatos = () => {
                   </div>
                   <div className="space-y-2">
                     <p className="text-2xl font-bold text-accent">500 Kz/mês</p>
-                    <p className="text-muted-foreground">Para manter perfil visível</p>
+                    <p className="text-muted-foreground">Para criarmos o perfil por VC</p>
                   </div>
+                  <a
+                    href="https://wa.me/244921346544"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                  >
+                    <MessageCircle className="h-5 w-5" />
+                    <span className="font-semibold">WhatsApp: 921346544</span>
+                  </a>
                   <Button variant="hero" size="lg" className="w-full" asChild>
                     <Link to="/cadastro">Começar Agora</Link>
                   </Button>
