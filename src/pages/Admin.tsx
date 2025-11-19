@@ -13,13 +13,19 @@ import {
   Briefcase,
   TrendingUp,
   Calendar,
-  AlertCircle
+  AlertCircle,
+  BookOpen,
+  Megaphone,
+  MapPin
 } from "lucide-react";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { AdminPerfis } from "@/components/admin/AdminPerfis";
 import { AdminFuncionarios } from "@/components/admin/AdminFuncionarios";
 import { AdminSalarios } from "@/components/admin/AdminSalarios";
 import { AdminNotificacoes } from "@/components/admin/AdminNotificacoes";
+import { AdminVagas } from "@/components/admin/AdminVagas";
+import { AdminCursos } from "@/components/admin/AdminCursos";
+import { AdminPromocoes } from "@/components/admin/AdminPromocoes";
 
 export default function Admin() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -86,10 +92,18 @@ export default function Admin() {
       </div>
 
       <Tabs defaultValue="dashboard" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 lg:w-auto">
+        <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 lg:w-auto">
           <TabsTrigger value="dashboard" className="gap-2">
             <TrendingUp className="h-4 w-4" />
             Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="vagas" className="gap-2">
+            <MapPin className="h-4 w-4" />
+            Vagas
+          </TabsTrigger>
+          <TabsTrigger value="cursos" className="gap-2">
+            <BookOpen className="h-4 w-4" />
+            Cursos
           </TabsTrigger>
           <TabsTrigger value="perfis" className="gap-2">
             <UserCheck className="h-4 w-4" />
@@ -103,6 +117,10 @@ export default function Admin() {
             <DollarSign className="h-4 w-4" />
             Salários
           </TabsTrigger>
+          <TabsTrigger value="promocoes" className="gap-2">
+            <Megaphone className="h-4 w-4" />
+            Promoções
+          </TabsTrigger>
           <TabsTrigger value="notificacoes" className="gap-2">
             <Bell className="h-4 w-4" />
             Notificações
@@ -111,6 +129,14 @@ export default function Admin() {
 
         <TabsContent value="dashboard">
           <AdminDashboard />
+        </TabsContent>
+
+        <TabsContent value="vagas">
+          <AdminVagas />
+        </TabsContent>
+
+        <TabsContent value="cursos">
+          <AdminCursos />
         </TabsContent>
 
         <TabsContent value="perfis">
@@ -123,6 +149,10 @@ export default function Admin() {
 
         <TabsContent value="salarios">
           <AdminSalarios />
+        </TabsContent>
+
+        <TabsContent value="promocoes">
+          <AdminPromocoes />
         </TabsContent>
 
         <TabsContent value="notificacoes">
