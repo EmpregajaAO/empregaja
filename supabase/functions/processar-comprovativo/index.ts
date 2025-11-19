@@ -14,8 +14,72 @@ serve(async (req) => {
 
   try {
     const { imageBase64, candidatoId, tipoServico, valor } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
+    // Input validation
+    if (!imageBase64 || !imageBase64.startsWith('data:image/')) {
+      throw new Error("Formato de imagem inválido");
+    }
+    if (imageBase64.length > 10 * 1024 * 1024) { // 10MB limit
+      throw new Error("Imagem muito grande. Máximo 10MB");
+    }
+    if (typeof valor !== 'number' || valor <= 0) {
+      throw new Error("Valor inválido");
+    }
+    if (!tipoServico || typeof tipoServico !== 'string') {
+      throw new Error("Tipo de serviço inválido");
+    }
+    if (!candidatoId || typeof candidatoId !== 'string') {
+      throw new Error("ID do candidato inválido");
+    }
+
+    // Get authenticated user
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error("Autenticação necessária");
+    }
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    
+    // Create client with user's auth
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    if (authError || !user) {
+      throw new Error("Não autenticado");
+    }
+
+    // SECURITY: Verify user owns this candidato
+    const { data: candidato, error: candidatoError } = await supabaseClient
+      .from('candidatos')
+      .select('id, perfil_id')
+      .eq('id', candidatoId)
+      .single();
+
+    if (candidatoError || !candidato) {
+      throw new Error("Candidato não encontrado");
+    }
+
+    const { data: perfil, error: perfilError } = await supabaseClient
+      .from('perfis')
+      .select('user_id')
+      .eq('id', candidato.perfil_id)
+      .single();
+
+    if (perfilError || !perfil) {
+      throw new Error("Perfil não encontrado");
+    }
+
+    if (perfil.user_id !== user.id) {
+      console.error(`Ownership violation: User ${user.id} tried to submit proof for candidato ${candidatoId} owned by ${perfil.user_id}`);
+      throw new Error("Você só pode enviar comprovativos para sua própria conta");
+    }
+
+    console.log(`User ${user.id} submitting payment proof for their candidato ${candidatoId}`);
+
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY não está configurada");
     }
@@ -73,13 +137,12 @@ serve(async (req) => {
 
     console.log("Dados extraídos:", dadosOcr);
 
-    // Criar cliente Supabase para salvar o comprovativo
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    // Criar cliente Supabase com service role para salvar o comprovativo
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
     // Salvar comprovativo na base de dados
-    const { data: comprovativo, error: comprovantivoError } = await supabase
+    const { data: comprovativo, error: comprovantivoError } = await supabaseAdmin
       .from('comprovativos_pagamento')
       .insert({
         candidato_id: candidatoId,
