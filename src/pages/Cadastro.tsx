@@ -12,9 +12,10 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, User, GraduationCap, Briefcase, Languages, Award, Building2, Info } from "lucide-react";
+import { Upload, User, GraduationCap, Briefcase, Languages, Award, Building2, Info, CreditCard, BadgeCheck } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const candidateFormSchema = z.object({
   fullName: z.string().trim().min(3, "Nome completo é obrigatório").max(100, "Nome muito longo"),
@@ -25,6 +26,7 @@ const candidateFormSchema = z.object({
   experience: z.string().trim().min(10, "Descreva sua experiência").max(2000, "Descrição muito longa"),
   skills: z.string().trim().min(5, "Liste suas habilidades").max(500, "Lista muito longa"),
   languages: z.string().trim().min(2, "Informe os idiomas que fala").max(200, "Lista muito longa"),
+  isPremium: z.boolean().default(false),
 });
 
 const employerFormSchema = z.object({
@@ -41,6 +43,8 @@ const Cadastro = () => {
   const { toast } = useToast();
   const [photo, setPhoto] = useState<File | null>(null);
   const [cv, setCv] = useState<File | null>(null);
+  const [paymentProof, setPaymentProof] = useState<File | null>(null);
+  const [isPremiumSelected, setIsPremiumSelected] = useState(false);
 
   const candidateForm = useForm<z.infer<typeof candidateFormSchema>>({
     resolver: zodResolver(candidateFormSchema),
@@ -53,6 +57,7 @@ const Cadastro = () => {
       experience: "",
       skills: "",
       languages: "",
+      isPremium: false,
     },
   });
 
@@ -116,22 +121,102 @@ const Cadastro = () => {
                     </AlertDescription>
                   </Alert>
 
-                  <div className="bg-secondary/50 rounded-lg p-4 space-y-2">
-                    <h3 className="font-semibold">Planos Disponíveis:</h3>
-                    <ul className="space-y-2 text-sm">
-                      <li className="flex items-start gap-2">
-                        <span className="font-bold text-primary">1.000 Kz</span>
-                        <span>- Criação de Perfil (inclui CV profissional para download sempre que precisar)</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="font-bold text-primary">500 Kz/mês</span>
-                        <span>- Manter conta ativa (mantém seu perfil visível aos empregadores e acesso às vagas)</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="font-bold text-accent">2.000 Kz/mês</span>
-                        <span>- Conta Pro (seu perfil será destacado e mostrado em primeiro lugar a cada empregador que entrar na plataforma, aumentando suas chances de ser contactado)</span>
-                      </li>
-                    </ul>
+                  {/* Escolha de Perfil */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold flex items-center gap-2">
+                      <BadgeCheck className="h-5 w-5 text-primary" />
+                      Escolha seu Tipo de Perfil
+                    </h3>
+                    
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {/* Perfil Normal */}
+                      <div 
+                        className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                          !isPremiumSelected 
+                            ? 'border-primary bg-primary/5' 
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                        onClick={() => {
+                          setIsPremiumSelected(false);
+                          candidateForm.setValue('isPremium', false);
+                        }}
+                      >
+                        <div className="flex items-start gap-3">
+                          <Checkbox 
+                            checked={!isPremiumSelected}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setIsPremiumSelected(false);
+                                candidateForm.setValue('isPremium', false);
+                              }
+                            }}
+                          />
+                          <div className="flex-1">
+                            <h4 className="font-bold text-lg">Perfil Normal</h4>
+                            <p className="text-2xl font-bold text-primary my-2">1.000 Kz</p>
+                            <ul className="space-y-1 text-sm text-muted-foreground">
+                              <li>✓ Criação de Perfil</li>
+                              <li>✓ CV profissional em PDF</li>
+                              <li>✓ Download ilimitado do CV</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Perfil Prêmio */}
+                      <div 
+                        className={`border-2 rounded-lg p-4 cursor-pointer transition-all relative overflow-hidden ${
+                          isPremiumSelected 
+                            ? 'border-accent bg-accent/5' 
+                            : 'border-border hover:border-accent/50'
+                        }`}
+                        onClick={() => {
+                          setIsPremiumSelected(true);
+                          candidateForm.setValue('isPremium', true);
+                        }}
+                      >
+                        <div className="absolute top-2 right-2">
+                          <div className="bg-accent text-accent-foreground px-2 py-1 rounded text-xs font-bold">
+                            RECOMENDADO
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <Checkbox 
+                            checked={isPremiumSelected}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setIsPremiumSelected(true);
+                                candidateForm.setValue('isPremium', true);
+                              }
+                            }}
+                          />
+                          <div className="flex-1">
+                            <h4 className="font-bold text-lg flex items-center gap-2">
+                              Perfil Prêmio
+                              <BadgeCheck className="h-5 w-5 text-accent" />
+                            </h4>
+                            <p className="text-2xl font-bold text-accent my-2">2.000 Kz</p>
+                            <ul className="space-y-1 text-sm text-muted-foreground">
+                              <li>✓ Tudo do Perfil Normal</li>
+                              <li>✓ <strong>Selo "Perfil Recomendado"</strong></li>
+                              <li>✓ Destaque visual para empregadores</li>
+                              <li>✓ Maior visibilidade na plataforma</li>
+                            </ul>
+                            <div className="mt-3 p-2 bg-accent/10 rounded text-xs">
+                              <strong>Benefício Extra:</strong> Este perfil é recomendado pelos nossos especialistas para aumentar sua visibilidade.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Mensagem de Incentivo */}
+                    <Alert className="border-accent/50 bg-accent/5">
+                      <Info className="h-4 w-4 text-accent" />
+                      <AlertDescription>
+                        O pagamento garante a criação do seu perfil premium, aumentando suas chances de ser visto pelos empregadores e acesso imediato ao seu currículo profissional.
+                      </AlertDescription>
+                    </Alert>
                   </div>
 
                   <Form {...candidateForm}>
@@ -334,8 +419,70 @@ const Cadastro = () => {
                         </div>
                       </div>
 
+                      {/* Informações de Pagamento */}
+                      <div className="space-y-4 border-t pt-6">
+                        <div className="flex items-center gap-2 text-lg font-semibold">
+                          <CreditCard className="h-5 w-5 text-primary" />
+                          <h3>Informações de Pagamento</h3>
+                        </div>
+
+                        <Alert>
+                          <Info className="h-4 w-4" />
+                          <AlertDescription>
+                            <strong>Valor a pagar:</strong> {isPremiumSelected ? '2.000 Kz (Perfil Prêmio)' : '1.000 Kz (Perfil Normal)'}
+                          </AlertDescription>
+                        </Alert>
+
+                        <div className="bg-secondary/30 rounded-lg p-4 space-y-3">
+                          <div>
+                            <Label className="text-sm font-semibold">IBAN para Transferência:</Label>
+                            <div className="mt-1 p-3 bg-background rounded border font-mono text-sm">
+                              0055 0000 8438 8152 1019 5
+                            </div>
+                          </div>
+                          <div>
+                            <Label className="text-sm font-semibold">Nome da Conta:</Label>
+                            <div className="mt-1 p-3 bg-background rounded border font-semibold">
+                              REPAIR LUBATEC
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="font-semibold">Formas de Pagamento Aceitas:</Label>
+                          <ul className="text-sm text-muted-foreground space-y-1 ml-4">
+                            <li>• Transferência Multicaixa Express</li>
+                            <li>• Pagamento via ATM</li>
+                          </ul>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="font-semibold">
+                            Anexar Comprovativo de Pagamento *
+                          </Label>
+                          <p className="text-sm text-muted-foreground">
+                            Faça upload do comprovativo de transferência ou pagamento
+                          </p>
+                          <div className="flex items-center gap-4">
+                            <Input
+                              type="file"
+                              accept="image/*,.pdf"
+                              onChange={(e) => setPaymentProof(e.target.files?.[0] || null)}
+                              className="max-w-xs"
+                              required
+                            />
+                            <Upload className="h-5 w-5 text-muted-foreground" />
+                          </div>
+                          {paymentProof && (
+                            <p className="text-sm text-green-600">
+                              ✓ Comprovativo anexado: {paymentProof.name}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
                       <Button type="submit" size="lg" className="w-full">
-                        Criar Perfil Profissional
+                        Finalizar Cadastro e Enviar Comprovativo
                       </Button>
                     </form>
                   </Form>
