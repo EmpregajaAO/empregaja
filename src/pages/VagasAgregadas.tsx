@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { MapPin, Building2, Clock, ExternalLink, Briefcase, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { calcularDiasRestantes, formatarDiasRestantes } from "@/utils/vagasUtils";
 
 interface Vaga {
   id: string;
@@ -25,6 +26,7 @@ interface Vaga {
   link_origem: string;
   data_publicacao_origem: string;
   data_coleta: string;
+  data_expiracao: string | null;
   ativa: boolean;
   provincia: {
     nome: string;
@@ -124,6 +126,20 @@ const VagasAgregadas = () => {
     if (diffDays < 7) return `${diffDays} dias atrás`;
     if (diffDays < 30) return `${Math.floor(diffDays / 7)} semanas atrás`;
     return date.toLocaleDateString("pt-AO");
+  };
+
+  const getDiasRestantesInfo = (dataExpiracao: string | null) => {
+    const dias = calcularDiasRestantes(dataExpiracao);
+    const texto = formatarDiasRestantes(dias);
+    
+    if (dias === null) return null;
+    
+    let variant: "default" | "secondary" | "destructive" | "outline" = "default";
+    if (dias < 0) variant = "destructive";
+    else if (dias <= 7) variant = "destructive";
+    else if (dias <= 15) variant = "secondary";
+    
+    return { texto, variant, dias };
   };
 
   const formatarSalario = (min: number | null, max: number | null, moeda: string) => {
@@ -248,19 +264,25 @@ const VagasAgregadas = () => {
                         {formatarData(vaga.data_publicacao_origem)}
                       </span>
                       
+                      {getDiasRestantesInfo(vaga.data_expiracao) && (
+                        <Badge variant={getDiasRestantesInfo(vaga.data_expiracao)!.variant} className="font-semibold">
+                          {getDiasRestantesInfo(vaga.data_expiracao)!.texto}
+                        </Badge>
+                      )}
+                      
                       {salario && (
                         <span className="flex items-center gap-1 font-semibold text-primary">
                           <Briefcase className="h-4 w-4" />
                           {salario}
                         </span>
                       )}
-
-                      {vaga.vagas_fontes && vaga.vagas_fontes.length > 0 && (
-                        <Badge variant="outline" className="text-xs">
-                          Fonte: {vaga.vagas_fontes[0].fontes_vagas.nome}
-                        </Badge>
-                      )}
                     </div>
+
+                    {vaga.vagas_fontes && vaga.vagas_fontes.length > 0 && (
+                      <Badge variant="outline" className="text-xs">
+                        Fonte: {vaga.vagas_fontes[0].fontes_vagas.nome}
+                      </Badge>
+                    )}
 
                     <div className="flex gap-2">
                       <Button 

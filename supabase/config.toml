@@ -14,3 +14,9 @@ verify_jwt = false
 
 [functions.enviar-notificacao]
 verify_jwt = false
+
+[functions.desativar-vagas-expiradas]
+verify_jwt = false
+
+[functions.inserir-vagas-manuais]
+verify_jwt = false
