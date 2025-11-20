@@ -157,7 +157,7 @@ const CandidateDetailModal = ({
 
           <TabsContent value="chat">
             {showChat && chatId ? (
-              <ChatWindow chatId={chatId} empregadorId={empregadorId} />
+              <ChatWindow chatId={chatId} />
             ) : (
               <div className="py-8 text-center text-muted-foreground">
                 <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />

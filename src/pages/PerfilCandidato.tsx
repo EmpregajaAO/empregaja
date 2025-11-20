@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { User, FileText, Eye, GraduationCap } from "lucide-react";
+import { User, FileText, Eye, GraduationCap, MessageSquare } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WelcomeSection from "@/components/candidate/WelcomeSection";
@@ -11,13 +11,16 @@ import ProfileSection from "@/components/candidate/ProfileSection";
 import CurriculumSection from "@/components/candidate/CurriculumSection";
 import AccessSection from "@/components/candidate/AccessSection";
 import CoursesSection from "@/components/candidate/CoursesSection";
+import CandidateChats from "@/components/candidate/CandidateChats";
 
 interface Candidato {
   id: string;
   numero_candidato: string;
   tipo_conta: string;
   cv_url: string | null;
+  perfil_id: string;
   perfis: {
+    id: string;
     nome_completo: string;
     telefone: string | null;
     status_validacao: string;
@@ -64,6 +67,7 @@ export default function PerfilCandidato() {
         .select(`
           *,
           perfis (
+            id,
             nome_completo,
             telefone,
             status_validacao
@@ -186,7 +190,7 @@ export default function PerfilCandidato() {
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <User className="w-4 h-4" />
               <span className="hidden sm:inline">Perfil</span>
@@ -194,6 +198,10 @@ export default function PerfilCandidato() {
             <TabsTrigger value="curriculum" className="flex items-center gap-2">
               <FileText className="w-4 h-4" />
               <span className="hidden sm:inline">Currículo</span>
+            </TabsTrigger>
+            <TabsTrigger value="messages" className="flex items-center gap-2">
+              <MessageSquare className="w-4 h-4" />
+              <span className="hidden sm:inline">Mensagens</span>
             </TabsTrigger>
             <TabsTrigger value="access" className="flex items-center gap-2">
               <Eye className="w-4 h-4" />
@@ -218,6 +226,13 @@ export default function PerfilCandidato() {
             <CurriculumSection
               candidatoData={candidato}
               tipoConta={candidato.tipo_conta}
+            />
+          </TabsContent>
+
+          <TabsContent value="messages" className="space-y-6">
+            <CandidateChats 
+              candidatoId={candidato.id} 
+              perfilId={candidato.perfis.id}
             />
           </TabsContent>
 
