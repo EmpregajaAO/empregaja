@@ -1136,6 +1136,7 @@ export type Database = {
           canais_contato: Json | null
           created_at: string | null
           data_coleta: string
+          data_expiracao: string | null
           data_publicacao_origem: string | null
           descricao: string
           empresa: string
@@ -1159,6 +1160,7 @@ export type Database = {
           canais_contato?: Json | null
           created_at?: string | null
           data_coleta?: string
+          data_expiracao?: string | null
           data_publicacao_origem?: string | null
           descricao: string
           empresa: string
@@ -1182,6 +1184,7 @@ export type Database = {
           canais_contato?: Json | null
           created_at?: string | null
           data_coleta?: string
+          data_expiracao?: string | null
           data_publicacao_origem?: string | null
           descricao?: string
           empresa?: string
