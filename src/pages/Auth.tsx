@@ -174,10 +174,10 @@ const Auth = () => {
 
       if (data.user) {
         toast({
-          title: "Conta criada!",
-          description: "Complete seu cadastro para continuar",
+          title: "Conta criada com sucesso!",
+          description: "Um email de confirmação foi enviado para o seu email. Por favor, clique no link dentro do email para concluir o seu cadastro.",
         });
-        navigate("/cadastro");
+        // Usuario será redirecionado automaticamente após confirmar o email
       }
     } catch (error: any) {
       toast({

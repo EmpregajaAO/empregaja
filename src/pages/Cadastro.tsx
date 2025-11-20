@@ -143,10 +143,10 @@ const Cadastro = () => {
       if (candidatoError) throw candidatoError;
 
       toast({
-        title: "Cadastro realizado!",
+        title: "Cadastro realizado com sucesso!",
         description: values.isPremium 
-          ? "Redirecionando para confirmação de pagamento..." 
-          : "Seu perfil foi criado com sucesso!",
+          ? "A redirecionar para confirmação de pagamento..." 
+          : "O seu perfil foi criado com sucesso!",
       });
 
       setTimeout(() => {
