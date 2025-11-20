@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   DollarSign, 
   Users, 
@@ -28,68 +27,40 @@ import { AdminCursos } from "@/components/admin/AdminCursos";
 import { AdminPromocoes } from "@/components/admin/AdminPromocoes";
 
 export default function Admin() {
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  useEffect(() => {
-    checkAdminAccess();
-  }, []);
-
-  const checkAdminAccess = async () => {
+  const handleLogout = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        navigate("/");
-        return;
-      }
-
-      const { data: roles, error } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.id)
-        .eq("role", "admin")
-        .single();
-
-      if (error || !roles) {
-        toast({
-          title: "Acesso Negado",
-          description: "Você não tem permissão para acessar esta área.",
-          variant: "destructive",
-        });
-        navigate("/");
-        return;
-      }
-
-      setIsAdmin(true);
+      await supabase.auth.signOut();
+      toast({
+        title: "Logout realizado",
+        description: "Até breve!",
+      });
+      navigate("/admin/login");
     } catch (error) {
-      console.error("Erro ao verificar acesso admin:", error);
-      navigate("/");
-    } finally {
-      setLoading(false);
+      console.error("Erro ao fazer logout:", error);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return null;
-  }
-
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground mb-2">Painel de Administração</h1>
-        <p className="text-muted-foreground">Gerencie toda a plataforma EmpregaJá</p>
+    <div className="min-h-screen bg-muted/30">
+      <div className="border-b bg-background">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Painel Administrativo
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">EmpregaJá - Gestão Completa</p>
+          </div>
+          <Button variant="outline" onClick={handleLogout} className="gap-2">
+            <LogOut className="h-4 w-4" />
+            Sair
+          </Button>
+        </div>
       </div>
+
+      <div className="container mx-auto py-8 px-4">
 
       <Tabs defaultValue="dashboard" className="space-y-6">
         <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 lg:w-auto">
@@ -159,6 +130,7 @@ export default function Admin() {
           <AdminNotificacoes />
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 }
