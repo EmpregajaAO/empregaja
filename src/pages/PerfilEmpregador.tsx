@@ -13,6 +13,9 @@ interface Empregador {
   id: string;
   nome_empresa: string;
   ramo_atuacao: string;
+  perfis: {
+    status_validacao: string;
+  };
 }
 
 interface Candidato {
@@ -62,7 +65,12 @@ const PerfilEmpregador = () => {
 
       const { data: empregadorData } = await supabase
         .from("empregadores")
-        .select("*")
+        .select(`
+          *,
+          perfis (
+            status_validacao
+          )
+        `)
         .eq("perfil_id", perfilData.id)
         .single();
 
@@ -127,6 +135,22 @@ const PerfilEmpregador = () => {
       <Header />
       
       <main className="flex-1 container mx-auto px-4 py-8">
+        {empregador.perfis.status_validacao === "pendente" && (
+          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-yellow-800">
+              ⏳ Seu perfil está pendente de validação. Aguarde a aprovação do administrador para acessar todas as funcionalidades.
+            </p>
+          </div>
+        )}
+        
+        {empregador.perfis.status_validacao === "rejeitado" && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-800">
+              ❌ Seu perfil foi rejeitado. Entre em contato com o suporte para mais informações.
+            </p>
+          </div>
+        )}
+
         {/* Mensagem de incentivo */}
         <div className="bg-muted/50 rounded-lg p-6 mb-8 border border-border">
           <p className="text-sm text-muted-foreground">

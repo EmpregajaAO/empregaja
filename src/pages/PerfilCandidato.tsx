@@ -20,6 +20,7 @@ interface Candidato {
   perfis: {
     nome_completo: string;
     telefone: string | null;
+    status_validacao: string;
   };
 }
 
@@ -64,7 +65,8 @@ export default function PerfilCandidato() {
           *,
           perfis (
             nome_completo,
-            telefone
+            telefone,
+            status_validacao
           )
         `)
         .eq("perfis.user_id", user.id)
@@ -154,6 +156,22 @@ export default function PerfilCandidato() {
       <Header />
       
       <div className="container mx-auto px-4 py-8">
+        {candidato.perfis.status_validacao === "pendente" && (
+          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-yellow-800">
+              ⏳ Seu perfil está pendente de validação. Aguarde a aprovação do administrador para acessar todas as funcionalidades.
+            </p>
+          </div>
+        )}
+        
+        {candidato.perfis.status_validacao === "rejeitado" && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-800">
+              ❌ Seu perfil foi rejeitado. Entre em contato com o suporte para mais informações.
+            </p>
+          </div>
+        )}
+
         <WelcomeSection
           nome={candidato.perfis.nome_completo}
           tipoConta={candidato.tipo_conta}
