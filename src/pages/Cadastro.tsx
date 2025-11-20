@@ -237,9 +237,9 @@ const Cadastro = () => {
         <main className="flex-1 flex items-center justify-center py-12 px-4">
           <Card className="w-full max-w-md text-center">
             <CardHeader>
-              <CardTitle>Autenticação Necessária</CardTitle>
+              <CardTitle>Email de Confirmação Enviado</CardTitle>
               <CardDescription>
-                Você precisa estar autenticado para completar seu cadastro
+                Foi enviado um email de confirmação para sua caixa de entrada. Por favor, clique no link do email para confirmar seu cadastro e depois volte aqui para completar seu perfil.
               </CardDescription>
             </CardHeader>
             <CardContent>
