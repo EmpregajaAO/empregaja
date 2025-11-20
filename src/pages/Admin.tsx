@@ -15,7 +15,8 @@ import {
   AlertCircle,
   BookOpen,
   Megaphone,
-  MapPin
+  MapPin,
+  FileText
 } from "lucide-react";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { AdminPerfis } from "@/components/admin/AdminPerfis";
@@ -25,6 +26,8 @@ import { AdminNotificacoes } from "@/components/admin/AdminNotificacoes";
 import { AdminVagas } from "@/components/admin/AdminVagas";
 import { AdminCursos } from "@/components/admin/AdminCursos";
 import { AdminPromocoes } from "@/components/admin/AdminPromocoes";
+import { AdminComprovativos } from "@/components/admin/AdminComprovativos";
+import { AdminGestãoCursos } from "@/components/admin/AdminGestãoCursos";
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -63,22 +66,30 @@ export default function Admin() {
       <div className="container mx-auto py-8 px-4">
 
       <Tabs defaultValue="dashboard" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 lg:w-auto">
+        <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 lg:w-auto">
           <TabsTrigger value="dashboard" className="gap-2">
             <TrendingUp className="h-4 w-4" />
             Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="comprovativos" className="gap-2">
+            <FileText className="h-4 w-4" />
+            Comprovativos
+          </TabsTrigger>
+          <TabsTrigger value="perfis" className="gap-2">
+            <UserCheck className="h-4 w-4" />
+            Perfis
           </TabsTrigger>
           <TabsTrigger value="vagas" className="gap-2">
             <MapPin className="h-4 w-4" />
             Vagas
           </TabsTrigger>
+          <TabsTrigger value="gestao-cursos" className="gap-2">
+            <BookOpen className="h-4 w-4" />
+            Gestão Cursos
+          </TabsTrigger>
           <TabsTrigger value="cursos" className="gap-2">
             <BookOpen className="h-4 w-4" />
-            Cursos
-          </TabsTrigger>
-          <TabsTrigger value="perfis" className="gap-2">
-            <UserCheck className="h-4 w-4" />
-            Perfis
+            Pag. Cursos
           </TabsTrigger>
           <TabsTrigger value="funcionarios" className="gap-2">
             <Briefcase className="h-4 w-4" />
@@ -102,16 +113,24 @@ export default function Admin() {
           <AdminDashboard />
         </TabsContent>
 
-        <TabsContent value="vagas">
-          <AdminVagas />
-        </TabsContent>
-
-        <TabsContent value="cursos">
-          <AdminCursos />
+        <TabsContent value="comprovativos">
+          <AdminComprovativos />
         </TabsContent>
 
         <TabsContent value="perfis">
           <AdminPerfis />
+        </TabsContent>
+
+        <TabsContent value="vagas">
+          <AdminVagas />
+        </TabsContent>
+
+        <TabsContent value="gestao-cursos">
+          <AdminGestãoCursos />
+        </TabsContent>
+
+        <TabsContent value="cursos">
+          <AdminCursos />
         </TabsContent>
 
         <TabsContent value="funcionarios">
