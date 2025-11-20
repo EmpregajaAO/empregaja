@@ -1,9 +1,31 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Briefcase, Clock } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { MapPin, Briefcase, Clock, Lock } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Vagas = () => {
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Verificar se usuário está autenticado
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session);
+      setLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
   const vagas = [
     { title: "Gestor de Vendas", company: "Empresa ABC", location: "Luanda", type: "Tempo Integral", date: "Há 2 dias" },
     { title: "Desenvolvedor Web", company: "Tech Solutions", location: "Luanda", type: "Tempo Integral", date: "Há 3 dias" },
@@ -26,10 +48,30 @@ const Vagas = () => {
               </p>
             </div>
 
+            {!loading && !isAuthenticated && (
+              <Alert className="max-w-4xl mx-auto mb-8 border-primary/50 bg-primary/5">
+                <Lock className="h-5 w-5 text-primary" />
+                <AlertTitle className="text-lg font-semibold">Acesso Restrito</AlertTitle>
+                <AlertDescription className="mt-2 space-y-3">
+                  <p className="text-base">
+                    As vagas de emprego estão disponíveis apenas para utilizadores registados. 
+                    Faça login ou crie uma conta gratuita para visualizar todas as oportunidades.
+                  </p>
+                  <Button 
+                    onClick={() => navigate("/cadastro")}
+                    className="w-full sm:w-auto"
+                  >
+                    Fazer Login / Registar
+                  </Button>
+                </AlertDescription>
+              </Alert>
+            )}
+
             <div className="max-w-4xl mx-auto space-y-4">
-              {vagas.map((vaga, index) => (
-                <Card key={index} className="hover:shadow-medium transition-shadow cursor-pointer">
-                  <CardHeader>
+              {isAuthenticated ? (
+                vagas.map((vaga, index) => (
+                  <Card key={index} className="hover:shadow-medium transition-shadow cursor-pointer">
+                    <CardHeader>
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                       <div className="space-y-2">
                         <CardTitle className="text-xl">{vaga.title}</CardTitle>
@@ -54,7 +96,15 @@ const Vagas = () => {
                     </div>
                   </CardHeader>
                 </Card>
-              ))}
+              ))
+              ) : (
+                !loading && (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <Lock className="h-16 w-16 mx-auto mb-4 opacity-20" />
+                    <p className="text-lg">Faça login para visualizar as vagas disponíveis</p>
+                  </div>
+                )
+              )}
             </div>
           </div>
         </section>
