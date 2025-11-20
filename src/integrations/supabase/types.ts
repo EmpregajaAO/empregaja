@@ -1139,11 +1139,13 @@ export type Database = {
           data_publicacao_origem: string | null
           descricao: string
           empresa: string
+          external_id: string | null
           hash_dedup: string
           id: string
           link_origem: string
           localidade: string
           moeda: string | null
+          origem: string | null
           provincia_id: string | null
           requisitos: string[] | null
           salario_max: number | null
@@ -1160,11 +1162,13 @@ export type Database = {
           data_publicacao_origem?: string | null
           descricao: string
           empresa: string
+          external_id?: string | null
           hash_dedup: string
           id?: string
           link_origem: string
           localidade: string
           moeda?: string | null
+          origem?: string | null
           provincia_id?: string | null
           requisitos?: string[] | null
           salario_max?: number | null
@@ -1181,11 +1185,13 @@ export type Database = {
           data_publicacao_origem?: string | null
           descricao?: string
           empresa?: string
+          external_id?: string | null
           hash_dedup?: string
           id?: string
           link_origem?: string
           localidade?: string
           moeda?: string | null
+          origem?: string | null
           provincia_id?: string | null
           requisitos?: string[] | null
           salario_max?: number | null

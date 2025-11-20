@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -7,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { MapPin, Building2, Clock, ExternalLink, Briefcase } from "lucide-react";
+import { MapPin, Building2, Clock, ExternalLink, Briefcase, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Vaga {
@@ -36,6 +37,7 @@ interface Vaga {
 }
 
 const VagasAgregadas = () => {
+  const navigate = useNavigate();
   const [vagas, setVagas] = useState<Vaga[]>([]);
   const [provincias, setProvincias] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -260,17 +262,28 @@ const VagasAgregadas = () => {
                       )}
                     </div>
 
-                    <Button asChild className="w-full">
-                      <a 
-                        href={vaga.link_origem} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2"
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={() => navigate(`/vaga/${vaga.id}`)}
+                        variant="outline"
+                        className="flex-1"
                       >
-                        Candidatar no Site Original
-                        <ExternalLink className="h-4 w-4" />
-                      </a>
-                    </Button>
+                        <Eye className="h-4 w-4 mr-2" />
+                        Ver Detalhes
+                      </Button>
+                      
+                      <Button asChild className="flex-1">
+                        <a 
+                          href={vaga.link_origem} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-2"
+                        >
+                          Candidatar-se
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               );
