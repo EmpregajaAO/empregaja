@@ -1,10 +1,40 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import { Search, Calendar, Star, FileText } from "lucide-react";
 
 const Empregadores = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+      setIsLoading(false);
+    };
+
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleComecarRecrutar = () => {
+    if (isAuthenticated) {
+      navigate("/perfil-empregador");
+    } else {
+      navigate("/cadastro");
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -55,8 +85,13 @@ const Empregadores = () => {
                 </div>
               </div>
               <div className="pt-8">
-                <Button variant="hero" size="xl" asChild>
-                  <Link to="/cadastro">Começar a Recrutar</Link>
+                <Button 
+                  variant="hero" 
+                  size="xl" 
+                  onClick={handleComecarRecrutar}
+                  disabled={isLoading}
+                >
+                  {isAuthenticated ? "Ver Candidatos" : "Começar a Recrutar"}
                 </Button>
               </div>
             </div>
