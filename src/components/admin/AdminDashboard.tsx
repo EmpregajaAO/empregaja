@@ -29,6 +29,51 @@ export function AdminDashboard() {
 
   useEffect(() => {
     loadDashboardStats();
+
+    // Escutar mudanças em tempo real nos comprovativos de pagamento
+    const channel = supabase
+      .channel('dashboard-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'comprovativos_pagamento'
+        },
+        () => {
+          console.log('Comprovativo atualizado, recarregando dashboard...');
+          loadDashboardStats();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'course_enrollments'
+        },
+        () => {
+          console.log('Matrícula atualizada, recarregando dashboard...');
+          loadDashboardStats();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'candidatos'
+        },
+        () => {
+          console.log('Candidato atualizado, recarregando dashboard...');
+          loadDashboardStats();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const loadDashboardStats = async () => {
