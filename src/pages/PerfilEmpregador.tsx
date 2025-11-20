@@ -6,8 +6,11 @@ import Footer from "@/components/Footer";
 import DashboardStats from "@/components/employer/DashboardStats";
 import CandidateFilters from "@/components/employer/CandidateFilters";
 import CandidateCard from "@/components/employer/CandidateCard";
-import { Loader2 } from "lucide-react";
+import { Loader2, GraduationCap } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface Empregador {
   id: string;
@@ -35,6 +38,7 @@ const PerfilEmpregador = () => {
   const [empregador, setEmpregador] = useState<Empregador | null>(null);
   const [candidatos, setCandidatos] = useState<Candidato[]>([]);
   const [filteredCandidatos, setFilteredCandidatos] = useState<Candidato[]>([]);
+  const [enrolledCourses, setEnrolledCourses] = useState<number>(0);
 
   useEffect(() => {
     loadEmpregadorData();
@@ -76,6 +80,14 @@ const PerfilEmpregador = () => {
 
       if (empregadorData) {
         setEmpregador(empregadorData);
+        
+        // Buscar cursos matriculados do empregador
+        const { data: enrollments } = await supabase
+          .from("course_enrollments")
+          .select("id")
+          .eq("empregador_id", empregadorData.id);
+        
+        setEnrolledCourses(enrollments?.length || 0);
       }
 
       // Buscar todos os candidatos (Pro primeiro, depois normais)
@@ -176,13 +188,55 @@ const PerfilEmpregador = () => {
         )}
 
         {/* Mensagem de incentivo */}
-        <div className="bg-muted/50 rounded-lg p-6 mb-8 border border-border">
+        <div className="bg-muted/50 rounded-lg p-6 mb-8 border border-border space-y-6">
           <p className="text-sm text-muted-foreground">
             Use este painel para encontrar rapidamente os melhores candidatos. 
             Perfis recomendados aparecem primeiro e são selecionados por nossa equipe 
             para aumentar suas chances de sucesso nas contratações. Suas informações 
             são mantidas seguras até você decidir interagir.
           </p>
+
+          {/* Seção de Cursos */}
+          <Card className="border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <GraduationCap className="h-5 w-5 text-primary" />
+                Formação Profissional
+              </CardTitle>
+              <CardDescription>
+                Invista no desenvolvimento da sua equipa com os nossos cursos certificados
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                <div>
+                  <p className="text-sm text-muted-foreground">Cursos Matriculados</p>
+                  <p className="text-2xl font-bold text-primary">{enrolledCourses}</p>
+                </div>
+                <Badge variant="secondary">
+                  50+ Cursos Disponíveis
+                </Badge>
+              </div>
+              <div className="flex gap-3">
+                <Button 
+                  onClick={() => navigate("/cursos")}
+                  className="flex-1"
+                >
+                  <GraduationCap className="h-4 w-4 mr-2" />
+                  Ver Catálogo de Cursos
+                </Button>
+                {enrolledCourses > 0 && (
+                  <Button 
+                    onClick={() => navigate("/perfil-candidato")}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    Meus Cursos
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Bem-vindo */}

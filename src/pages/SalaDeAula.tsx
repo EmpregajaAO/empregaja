@@ -58,34 +58,95 @@ export default function SalaDeAula() {
         return;
       }
 
-      // Buscar candidato
-      const { data: candidato } = await supabase
-        .from("candidatos")
-        .select("id")
-        .eq("perfil_id", (await supabase.from("perfis").select("id").eq("user_id", user.id).single()).data?.id)
+      // Buscar perfil e tipo de utilizador
+      const { data: perfil } = await supabase
+        .from("perfis")
+        .select("id, tipo_utilizador")
+        .eq("user_id", user.id)
         .single();
 
-      if (!candidato) {
+      if (!perfil) {
         toast({
           title: "Erro",
-          description: "Perfil de candidato não encontrado",
+          description: "Perfil não encontrado",
           variant: "destructive",
         });
         navigate("/");
         return;
       }
 
+      let studentId = null;
+      let studentIdField = "";
+
+      if (perfil.tipo_utilizador === "candidato") {
+        const { data: candidato } = await supabase
+          .from("candidatos")
+          .select("id")
+          .eq("perfil_id", perfil.id)
+          .single();
+
+        if (!candidato) {
+          toast({
+            title: "Erro",
+            description: "Candidato não encontrado",
+            variant: "destructive",
+          });
+          navigate("/");
+          return;
+        }
+        studentId = candidato.id;
+        studentIdField = "candidato_id";
+      } else if (perfil.tipo_utilizador === "empregador") {
+        const { data: empregador } = await supabase
+          .from("empregadores")
+          .select("id")
+          .eq("perfil_id", perfil.id)
+          .single();
+
+        if (!empregador) {
+          toast({
+            title: "Erro",
+            description: "Empregador não encontrado",
+            variant: "destructive",
+          });
+          navigate("/");
+          return;
+        }
+        studentId = empregador.id;
+        studentIdField = "empregador_id";
+      }
+
       // Buscar matrícula
-      const { data: enrollmentData, error: enrollmentError } = await supabase
-        .from("course_enrollments")
-        .select(`
-          *,
-          courses(*)
-        `)
-        .eq("candidato_id", candidato.id)
-        .eq("course_id", courseId)
-        .eq("payment_verified", true)
-        .single();
+      let enrollmentData;
+      let enrollmentError;
+
+      if (studentIdField === "candidato_id") {
+        const result = await supabase
+          .from("course_enrollments")
+          .select(`
+            *,
+            courses(*)
+          `)
+          .eq("candidato_id", studentId)
+          .eq("course_id", courseId)
+          .eq("payment_verified", true)
+          .single();
+        enrollmentData = result.data;
+        enrollmentError = result.error;
+      } else {
+        const result = await supabase
+          .from("course_enrollments")
+          .select(`
+            *,
+            courses(*)
+          `)
+          .eq("empregador_id", studentId)
+          .eq("course_id", courseId)
+          .eq("payment_verified", true)
+          .single();
+        enrollmentData = result.data;
+        enrollmentError = result.error;
+      }
 
       if (enrollmentError || !enrollmentData) {
         toast({
