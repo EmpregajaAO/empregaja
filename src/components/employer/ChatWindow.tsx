@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 interface ChatWindowProps {
   chatId: string;
-  empregadorId: string;
+  userPerfilId?: string; // ID do perfil do usuário (empregador ou candidato)
 }
 
 interface Mensagem {
@@ -19,17 +19,20 @@ interface Mensagem {
   lida: boolean;
 }
 
-const ChatWindow = ({ chatId, empregadorId }: ChatWindowProps) => {
+const ChatWindow = ({ chatId, userPerfilId }: ChatWindowProps) => {
   const [mensagens, setMensagens] = useState<Mensagem[]>([]);
   const [novaMensagem, setNovaMensagem] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [perfilId, setPerfilId] = useState<string>("");
+  const [perfilId, setPerfilId] = useState<string>(userPerfilId || "");
 
   useEffect(() => {
-    loadPerfilId();
+    if (!userPerfilId) {
+      loadPerfilId();
+    }
     loadMensagens();
+    markMessagesAsRead();
     
     // Configurar realtime para novas mensagens
     const channel = supabase
@@ -44,6 +47,10 @@ const ChatWindow = ({ chatId, empregadorId }: ChatWindowProps) => {
         },
         (payload) => {
           setMensagens((prev) => [...prev, payload.new as Mensagem]);
+          // Marcar como lida se não for do próprio usuário
+          if (payload.new.remetente_id !== perfilId) {
+            markMessageAsRead(payload.new.id);
+          }
         }
       )
       .subscribe();
@@ -51,7 +58,7 @@ const ChatWindow = ({ chatId, empregadorId }: ChatWindowProps) => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [chatId]);
+  }, [chatId, perfilId]);
 
   useEffect(() => {
     // Scroll para última mensagem
@@ -62,14 +69,19 @@ const ChatWindow = ({ chatId, empregadorId }: ChatWindowProps) => {
 
   const loadPerfilId = async () => {
     try {
+      // Tenta obter o perfil do usuário logado
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) return;
+
       const { data } = await supabase
-        .from("empregadores")
-        .select("perfil_id")
-        .eq("id", empregadorId)
+        .from("perfis")
+        .select("id")
+        .eq("user_id", user.id)
         .single();
 
       if (data) {
-        setPerfilId(data.perfil_id);
+        setPerfilId(data.id);
       }
     } catch (error) {
       console.error("Erro ao carregar perfil ID:", error);
@@ -92,6 +104,32 @@ const ChatWindow = ({ chatId, empregadorId }: ChatWindowProps) => {
       toast.error("Erro ao carregar mensagens");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const markMessagesAsRead = async () => {
+    if (!perfilId) return;
+
+    try {
+      await supabase
+        .from("mensagens")
+        .update({ lida: true })
+        .eq("chat_id", chatId)
+        .neq("remetente_id", perfilId)
+        .eq("lida", false);
+    } catch (error) {
+      console.error("Erro ao marcar mensagens como lidas:", error);
+    }
+  };
+
+  const markMessageAsRead = async (messageId: string) => {
+    try {
+      await supabase
+        .from("mensagens")
+        .update({ lida: true })
+        .eq("id", messageId);
+    } catch (error) {
+      console.error("Erro ao marcar mensagem como lida:", error);
     }
   };
 
