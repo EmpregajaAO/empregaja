@@ -8,3 +8,9 @@ verify_jwt = true
 
 [functions.agregar-vagas]
 verify_jwt = false
+
+[functions.scraper-angovagas]
+verify_jwt = false
+
+[functions.enviar-notificacao]
+verify_jwt = false
