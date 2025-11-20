@@ -115,6 +115,12 @@ const Header = () => {
           <Link to="/cursos" className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors">
             Cursos
           </Link>
+          <Link to="/admin/login">
+            <Button variant="outline" size="sm" className="gap-2 border-primary/20 hover:bg-primary/10">
+              <User className="h-4 w-4" />
+              Admin Login
+            </Button>
+          </Link>
           <Link to="/vagas" className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors">
             Vagas
           </Link>
