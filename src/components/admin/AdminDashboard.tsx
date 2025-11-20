@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, Users, UserCheck, FileText, TrendingUp, Calendar } from "lucide-react";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 
 interface DashboardStats {
   totalCandidatos: number;
@@ -12,6 +14,12 @@ interface DashboardStats {
   candidatosPro: number;
   perfisPendentes: number;
   renovacoesMes: number;
+}
+
+interface MonthlyRevenue {
+  mes: string;
+  receita: number;
+  pagamentos: number;
 }
 
 export function AdminDashboard() {
@@ -25,6 +33,7 @@ export function AdminDashboard() {
     perfisPendentes: 0,
     renovacoesMes: 0,
   });
+  const [monthlyData, setMonthlyData] = useState<MonthlyRevenue[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -114,6 +123,28 @@ export function AdminDashboard() {
         const data = new Date(p.created_at);
         return data.getMonth() === mesAtual && data.getFullYear() === anoAtual;
       }).reduce((sum, p) => sum + Number(p.valor), 0) || 0;
+
+      // Calcular dados mensais dos últimos 6 meses
+      const monthlyRevenue: MonthlyRevenue[] = [];
+      for (let i = 5; i >= 0; i--) {
+        const date = new Date(anoAtual, mesAtual - i, 1);
+        const mes = date.toLocaleDateString('pt-AO', { month: 'short', year: 'numeric' });
+        const month = date.getMonth();
+        const year = date.getFullYear();
+        
+        const monthPayments = pagamentos?.filter(p => {
+          const paymentDate = new Date(p.created_at);
+          return paymentDate.getMonth() === month && paymentDate.getFullYear() === year;
+        }) || [];
+        
+        monthlyRevenue.push({
+          mes,
+          receita: monthPayments.reduce((sum, p) => sum + Number(p.valor), 0),
+          pagamentos: monthPayments.length
+        });
+      }
+      
+      setMonthlyData(monthlyRevenue);
 
       // Renovações do mês (contas que expiraram ou vão expirar este mês)
       const inicioMes = new Date(anoAtual, mesAtual, 1);
@@ -218,6 +249,95 @@ export function AdminDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{stats.renovacoesMes}</div>
             <p className="text-xs text-muted-foreground">Contas a expirar</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Evolução da Receita Mensal</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer
+              config={{
+                receita: {
+                  label: "Receita",
+                  color: "hsl(var(--primary))",
+                },
+              }}
+              className="h-[300px]"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={monthlyData}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="mes" 
+                    className="text-xs"
+                    stroke="hsl(var(--muted-foreground))"
+                  />
+                  <YAxis 
+                    className="text-xs"
+                    stroke="hsl(var(--muted-foreground))"
+                    tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
+                  />
+                  <ChartTooltip 
+                    content={<ChartTooltipContent 
+                      formatter={(value) => `${Number(value).toLocaleString('pt-AO')} Kz`}
+                    />} 
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="receita" 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth={2}
+                    dot={{ fill: "hsl(var(--primary))", r: 4 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Pagamentos por Mês</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer
+              config={{
+                pagamentos: {
+                  label: "Pagamentos",
+                  color: "hsl(var(--primary))",
+                },
+              }}
+              className="h-[300px]"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monthlyData}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="mes" 
+                    className="text-xs"
+                    stroke="hsl(var(--muted-foreground))"
+                  />
+                  <YAxis 
+                    className="text-xs"
+                    stroke="hsl(var(--muted-foreground))"
+                  />
+                  <ChartTooltip 
+                    content={<ChartTooltipContent 
+                      formatter={(value) => `${value} pagamentos`}
+                    />} 
+                  />
+                  <Bar 
+                    dataKey="pagamentos" 
+                    fill="hsl(var(--primary))" 
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
           </CardContent>
         </Card>
       </div>
