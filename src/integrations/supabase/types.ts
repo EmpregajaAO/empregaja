@@ -358,11 +358,12 @@ export type Database = {
       }
       course_enrollments: {
         Row: {
-          candidato_id: string
+          candidato_id: string | null
           certificate_issued: boolean | null
           completed_at: string | null
           comprovativo_id: string | null
           course_id: string
+          empregador_id: string | null
           enrolled_at: string | null
           final_score: number | null
           id: string
@@ -370,11 +371,12 @@ export type Database = {
           status: string | null
         }
         Insert: {
-          candidato_id: string
+          candidato_id?: string | null
           certificate_issued?: boolean | null
           completed_at?: string | null
           comprovativo_id?: string | null
           course_id: string
+          empregador_id?: string | null
           enrolled_at?: string | null
           final_score?: number | null
           id?: string
@@ -382,11 +384,12 @@ export type Database = {
           status?: string | null
         }
         Update: {
-          candidato_id?: string
+          candidato_id?: string | null
           certificate_issued?: boolean | null
           completed_at?: string | null
           comprovativo_id?: string | null
           course_id?: string
+          empregador_id?: string | null
           enrolled_at?: string | null
           final_score?: number | null
           id?: string
@@ -413,6 +416,13 @@ export type Database = {
             columns: ["course_id"]
             isOneToOne: false
             referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_enrollments_empregador_id_fkey"
+            columns: ["empregador_id"]
+            isOneToOne: false
+            referencedRelation: "empregadores"
             referencedColumns: ["id"]
           },
         ]

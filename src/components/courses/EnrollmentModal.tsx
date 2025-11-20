@@ -57,7 +57,7 @@ export const EnrollmentModal = ({ course, open, onClose }: EnrollmentModalProps)
       // Get perfil
       const { data: perfil } = await supabase
         .from("perfis")
-        .select("id")
+        .select("id, tipo_utilizador")
         .eq("user_id", user.id)
         .single();
 
@@ -67,15 +67,38 @@ export const EnrollmentModal = ({ course, open, onClose }: EnrollmentModalProps)
         return;
       }
 
-      // Get candidato
-      const { data: candidato } = await supabase
-        .from("candidatos")
-        .select("id")
-        .eq("perfil_id", perfil.id)
-        .single();
+      // Get candidato or empregador based on profile type
+      let candidatoId = null;
+      let empregadorId = null;
 
-      if (!candidato) {
-        toast.error("Candidato não encontrado");
+      if (perfil.tipo_utilizador === "candidato") {
+        const { data: candidato } = await supabase
+          .from("candidatos")
+          .select("id")
+          .eq("perfil_id", perfil.id)
+          .single();
+
+        if (!candidato) {
+          toast.error("Candidato não encontrado");
+          setUploading(false);
+          return;
+        }
+        candidatoId = candidato.id;
+      } else if (perfil.tipo_utilizador === "empregador") {
+        const { data: empregador } = await supabase
+          .from("empregadores")
+          .select("id")
+          .eq("perfil_id", perfil.id)
+          .single();
+
+        if (!empregador) {
+          toast.error("Empregador não encontrado");
+          setUploading(false);
+          return;
+        }
+        empregadorId = empregador.id;
+      } else {
+        toast.error("Tipo de utilizador inválido");
         setUploading(false);
         return;
       }
@@ -97,15 +120,22 @@ export const EnrollmentModal = ({ course, open, onClose }: EnrollmentModalProps)
         .getPublicUrl(filePath);
 
       // Create comprovativo record
+      const comprovantivoData: any = {
+        comprovativo_url: publicUrl,
+        tipo_servico: `Curso: ${course.title}`,
+        valor: course.price,
+        status: "pendente"
+      };
+
+      if (candidatoId) {
+        comprovantivoData.candidato_id = candidatoId;
+      } else if (empregadorId) {
+        comprovantivoData.candidato_id = empregadorId; // Using same field for both types
+      }
+
       const { data: comprovativo, error: comprovantivoError } = await supabase
         .from("comprovativos_pagamento")
-        .insert({
-          candidato_id: candidato.id,
-          comprovativo_url: publicUrl,
-          tipo_servico: `Curso: ${course.title}`,
-          valor: course.price,
-          status: "pendente"
-        })
+        .insert(comprovantivoData)
         .select()
         .single();
 
@@ -120,15 +150,21 @@ export const EnrollmentModal = ({ course, open, onClose }: EnrollmentModalProps)
 
       if (dbCourse) {
         // Create enrollment
+        const enrollmentData: any = {
+          course_id: dbCourse.id,
+          comprovativo_id: comprovativo.id,
+          payment_verified: false
+        };
+
+        if (candidatoId) {
+          enrollmentData.candidato_id = candidatoId;
+        } else if (empregadorId) {
+          enrollmentData.empregador_id = empregadorId;
+        }
+
         const { error: enrollmentError } = await supabase
           .from("course_enrollments")
-          .insert({
-            candidato_id: candidato.id,
-            course_id: dbCourse.id,
-            comprovativo_id: comprovativo.id,
-            payment_verified: false,
-            status: "pending"
-          });
+          .insert(enrollmentData);
 
         if (enrollmentError) throw enrollmentError;
       }
