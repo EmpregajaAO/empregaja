@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Video, Headphones, FileText, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import DOMPurify from "dompurify";
 
 interface Lesson {
   id: string;
@@ -76,7 +77,12 @@ export function LessonContent({ lesson }: LessonContentProps) {
             Conteúdo Escrito
           </div>
           <div className="prose prose-sm max-w-none bg-muted/50 p-6 rounded-lg">
-            <div dangerouslySetInnerHTML={{ __html: lesson.content_text }} />
+            <div dangerouslySetInnerHTML={{ 
+              __html: DOMPurify.sanitize(lesson.content_text, {
+                ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'a', 'blockquote', 'code', 'pre', 'span', 'div'],
+                ALLOWED_ATTR: ['href', 'target', 'rel', 'class']
+              }) 
+            }} />
           </div>
         </div>
       )}

@@ -8,15 +8,16 @@ POST https://qjoyyevmdfbdcbhekisy.supabase.co/functions/v1/receber-vaga
 
 ## 🔑 Autenticação
 
-O endpoint é **público** e não requer autenticação via Bearer token. 
+O endpoint requer autenticação via **API Key** no header `X-API-Key`. 
 
-> **Nota**: Para maior segurança em produção, recomenda-se adicionar autenticação por API key no futuro.
+> **Importante**: Mantenha sua API key segura e não a compartilhe publicamente.
 
 ## 📥 Formato da Requisição
 
 ### Headers
 ```
 Content-Type: application/json
+X-API-Key: YOUR_WEBHOOK_API_KEY
 ```
 
 ### Body (JSON)
@@ -83,6 +84,7 @@ Content-Type: application/json
 ```javascript
 function enviarVagaParaEmpregaJa() {
   const url = 'https://qjoyyevmdfbdcbhekisy.supabase.co/functions/v1/receber-vaga';
+  const apiKey = 'SUA_WEBHOOK_API_KEY_AQUI'; // Substitua pela sua API key
   
   const vaga = {
     data: {
@@ -100,6 +102,9 @@ function enviarVagaParaEmpregaJa() {
   const options = {
     method: 'post',
     contentType: 'application/json',
+    headers: {
+      'X-API-Key': apiKey
+    },
     payload: JSON.stringify(vaga),
     muteHttpExceptions: true
   };
@@ -122,6 +127,7 @@ function enviarVagaParaEmpregaJa() {
 // Função para enviar múltiplas vagas
 function enviarMultiplasVagas(vagas) {
   const url = 'https://qjoyyevmdfbdcbhekisy.supabase.co/functions/v1/receber-vaga';
+  const apiKey = 'SUA_WEBHOOK_API_KEY_AQUI'; // Substitua pela sua API key
   
   vagas.forEach((vaga, index) => {
     Utilities.sleep(1000); // Esperar 1 segundo entre requisições
@@ -129,6 +135,9 @@ function enviarMultiplasVagas(vagas) {
     const options = {
       method: 'post',
       contentType: 'application/json',
+      headers: {
+        'X-API-Key': apiKey
+      },
       payload: JSON.stringify({ data: vaga }),
       muteHttpExceptions: true
     };
