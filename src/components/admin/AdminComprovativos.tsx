@@ -74,6 +74,31 @@ export function AdminComprovativos() {
 
   const aprovarPagamento = async (comprovantivoId: string, tipoServico: string) => {
     try {
+      // Buscar dados do comprovativo antes de aprovar
+      const { data: comprovantivoData } = await supabase
+        .from("comprovativos_pagamento")
+        .select(`
+          candidato_id,
+          candidatos (
+            perfil_id,
+            perfis (
+              user_id,
+              nome_completo
+            )
+          )
+        `)
+        .eq("id", comprovantivoId)
+        .single();
+
+      if (!comprovantivoData) {
+        toast({
+          title: "Erro",
+          description: "Comprovativo não encontrado",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const { error } = await supabase
         .from("comprovativos_pagamento")
         .update({ status: "aprovado" })
@@ -113,6 +138,28 @@ export function AdminComprovativos() {
         }
       }
 
+      // Enviar notificação
+      const perfil = (comprovantivoData as any).candidatos?.perfis;
+      if (perfil) {
+        const { data, error: usersError } = await supabase.auth.admin.listUsers();
+        const userEmail = data?.users?.find((u: any) => u.id === perfil.user_id)?.email;
+
+        if (userEmail) {
+          const tipoNotificacao = tipoServico === "curso" 
+            ? "aprovacao_curso" 
+            : "aprovacao_conta_pro";
+
+          supabase.functions.invoke("enviar-notificacao", {
+            body: {
+              user_id: perfil.user_id,
+              email: userEmail,
+              nome: perfil.nome_completo,
+              tipo: tipoNotificacao,
+            },
+          }).catch(err => console.error("Erro ao enviar notificação:", err));
+        }
+      }
+
       toast({
         title: "Sucesso",
         description: "Pagamento aprovado com sucesso",
@@ -129,14 +176,55 @@ export function AdminComprovativos() {
     }
   };
 
-  const rejeitarPagamento = async (comprovantivoId: string) => {
+  const rejeitarPagamento = async (comprovantivoId: string, tipoServico: string) => {
     try {
+      // Buscar dados do comprovativo antes de rejeitar
+      const { data: comprovantivoData } = await supabase
+        .from("comprovativos_pagamento")
+        .select(`
+          candidato_id,
+          candidatos (
+            perfil_id,
+            perfis (
+              user_id,
+              nome_completo
+            )
+          )
+        `)
+        .eq("id", comprovantivoId)
+        .single();
+
       const { error } = await supabase
         .from("comprovativos_pagamento")
         .update({ status: "rejeitado" })
         .eq("id", comprovantivoId);
 
       if (error) throw error;
+
+      // Enviar notificação
+      if (comprovantivoData) {
+        const perfil = (comprovantivoData as any).candidatos?.perfis;
+        if (perfil) {
+          const { data, error: usersError } = await supabase.auth.admin.listUsers();
+          const userEmail = data?.users?.find((u: any) => u.id === perfil.user_id)?.email;
+
+          if (userEmail) {
+            const tipoNotificacao = tipoServico === "curso" 
+              ? "rejeicao_curso" 
+              : "rejeicao_perfil";
+
+            supabase.functions.invoke("enviar-notificacao", {
+              body: {
+                user_id: perfil.user_id,
+                email: userEmail,
+                nome: perfil.nome_completo,
+                tipo: tipoNotificacao,
+                detalhes: "Por favor, verifique o comprovativo e envie novamente.",
+              },
+            }).catch(err => console.error("Erro ao enviar notificação:", err));
+          }
+        }
+      }
 
       toast({
         title: "Sucesso",
@@ -239,7 +327,7 @@ export function AdminComprovativos() {
                       <Button
                         size="sm"
                         variant="destructive"
-                        onClick={() => rejeitarPagamento(comp.id)}
+                        onClick={() => rejeitarPagamento(comp.id, comp.tipo_servico)}
                         className="gap-1"
                       >
                         <XCircle className="h-3 w-3" />

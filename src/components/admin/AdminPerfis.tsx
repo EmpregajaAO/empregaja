@@ -57,6 +57,31 @@ export function AdminPerfis() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
+      // Buscar dados do perfil antes de atualizar
+      const { data: perfilData } = await supabase
+        .from("perfis")
+        .select("user_id, nome_completo, tipo_utilizador")
+        .eq("id", perfilId)
+        .single();
+
+      if (!perfilData) {
+        toast({
+          title: "Erro",
+          description: "Perfil não encontrado",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Buscar email do usuário através do admin API
+      const { data, error: usersError } = await supabase.auth.admin.listUsers();
+      const userEmail = data?.users?.find((u: any) => u.id === perfilData.user_id)?.email;
+
+      if (usersError) {
+        console.error("Erro ao buscar email:", usersError);
+      }
+
+      // Atualizar perfil
       const { error } = await supabase
         .from("perfis")
         .update({
@@ -67,6 +92,22 @@ export function AdminPerfis() {
         .eq("id", perfilId);
 
       if (error) throw error;
+
+      // Enviar notificação se tiver email
+      if (userEmail) {
+        const tipoNotificacao = perfilData.tipo_utilizador === "empregador" 
+          ? (status === "aprovado" ? "aprovacao_empregador" : "rejeicao_empregador")
+          : (status === "aprovado" ? "aprovacao_perfil" : "rejeicao_perfil");
+
+        supabase.functions.invoke("enviar-notificacao", {
+          body: {
+            user_id: perfilData.user_id,
+            email: userEmail,
+            nome: perfilData.nome_completo,
+            tipo: tipoNotificacao,
+          },
+        }).catch(err => console.error("Erro ao enviar notificação:", err));
+      }
 
       toast({
         title: "Sucesso",
