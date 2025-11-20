@@ -1,11 +1,98 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, LogOut, User } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { User as SupabaseUser, Session } from "@supabase/supabase-js";
 import angolaFlag from "@/assets/angola-flag.webp";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [userType, setUserType] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        // Fetch user type
+        if (session?.user) {
+          setTimeout(() => {
+            fetchUserType(session.user.id);
+          }, 0);
+        } else {
+          setUserType(null);
+        }
+      }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        fetchUserType(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const fetchUserType = async (userId: string) => {
+    try {
+      const { data } = await supabase
+        .from("perfis")
+        .select("tipo_utilizador")
+        .eq("user_id", userId)
+        .maybeSingle();
+      
+      setUserType(data?.tipo_utilizador || null);
+    } catch (error) {
+      console.error("Erro ao buscar tipo de usuário:", error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      setUser(null);
+      setSession(null);
+      setUserType(null);
+      toast({
+        title: "Até breve!",
+        description: "Logout realizado com sucesso",
+      });
+      navigate("/");
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: "Erro ao fazer logout",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const getUserProfileLink = () => {
+    if (userType === "candidato") return "/perfil-candidato";
+    if (userType === "empregador") return "/perfil-empregador";
+    return "/cadastro";
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -37,12 +124,37 @@ const Header = () => {
         </nav>
 
         <div className="hidden md:flex items-center gap-3">
-          <Button variant="ghost" asChild>
-            <Link to="/login">Login</Link>
-          </Button>
-          <Button variant="hero" asChild>
-            <Link to="/cadastro">Criar Perfil</Link>
-          </Button>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <User className="h-4 w-4 mr-2" />
+                  {user.email?.split("@")[0]}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate(getUserProfileLink())}>
+                  <User className="h-4 w-4 mr-2" />
+                  Meu Perfil
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sair
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Button variant="ghost" asChild>
+                <Link to="/auth">Entrar</Link>
+              </Button>
+              <Button variant="hero" asChild>
+                <Link to="/cadastro">Criar Perfil</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -95,12 +207,29 @@ const Header = () => {
               Sobre
             </Link>
             <div className="flex flex-col gap-2 pt-2 border-t border-border">
-              <Button variant="ghost" asChild onClick={() => setIsMenuOpen(false)}>
-                <Link to="/login">Login</Link>
-              </Button>
-              <Button variant="hero" asChild onClick={() => setIsMenuOpen(false)}>
-                <Link to="/cadastro">Criar Perfil</Link>
-              </Button>
+              {user ? (
+                <>
+                  <Button variant="ghost" asChild onClick={() => setIsMenuOpen(false)}>
+                    <Link to={getUserProfileLink()}>
+                      <User className="h-4 w-4 mr-2" />
+                      Meu Perfil
+                    </Link>
+                  </Button>
+                  <Button variant="destructive" onClick={() => { handleLogout(); setIsMenuOpen(false); }}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sair
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" asChild onClick={() => setIsMenuOpen(false)}>
+                    <Link to="/auth">Entrar</Link>
+                  </Button>
+                  <Button variant="hero" asChild onClick={() => setIsMenuOpen(false)}>
+                    <Link to="/cadastro">Criar Perfil</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </nav>
         </div>

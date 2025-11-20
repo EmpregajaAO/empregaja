@@ -16,6 +16,7 @@ import SalaDeAula from "./pages/SalaDeAula";
 import Privacidade from "./pages/Privacidade";
 import Sobre from "./pages/Sobre";
 import Cadastro from "./pages/Cadastro";
+import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import PaymentConfirmation from "./components/PaymentConfirmation";
 import NotFound from "./pages/NotFound";
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/sala-de-aula/:courseId" element={<SalaDeAula />} />
           <Route path="/privacidade" element={<Privacidade />} />
           <Route path="/sobre" element={<Sobre />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/confirmacao-pagamento" element={<PaymentConfirmation />} />
