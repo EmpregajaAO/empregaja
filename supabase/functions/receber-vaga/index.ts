@@ -23,11 +23,23 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Verify API Key authentication
+    const WEBHOOK_API_KEY = Deno.env.get('WEBHOOK_API_KEY');
+    const providedKey = req.headers.get('X-API-Key');
+
+    if (!providedKey || providedKey !== WEBHOOK_API_KEY) {
+      console.error('❌ Unauthorized: Invalid or missing API key');
+      return new Response(
+        JSON.stringify({ success: false, error: 'Unauthorized' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      );
+    }
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    console.log('📥 Recebendo requisição de vaga...');
+    console.log('📥 Recebendo requisição de vaga autenticada...');
 
     // Parse the request body
     const { data: vagaData } = await req.json() as { data: VagaInput };
