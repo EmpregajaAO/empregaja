@@ -19,6 +19,7 @@ import Cadastro from "./pages/Cadastro";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
+import AdminInserirVagas from "./pages/AdminInserirVagas";
 import PaymentConfirmation from "./components/PaymentConfirmation";
 import NotFound from "./pages/NotFound";
 import { AdminRoute } from "@/components/AdminRoute";
@@ -47,6 +48,7 @@ const App = () => (
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
+          <Route path="/admin/inserir-vagas" element={<AdminRoute><AdminInserirVagas /></AdminRoute>} />
           <Route path="/confirmacao-pagamento" element={<PaymentConfirmation />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
