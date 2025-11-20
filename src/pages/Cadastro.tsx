@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { supabase } from "@/integrations/supabase/client";
+import { User, Session } from "@supabase/supabase-js";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -12,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, User, GraduationCap, Briefcase, Languages, Award, Building2, Info, CreditCard, BadgeCheck } from "lucide-react";
+import { Upload, User as UserIcon, GraduationCap, Briefcase, Languages, Award, Building2, Info, CreditCard, BadgeCheck, Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -45,6 +47,29 @@ const Cadastro = () => {
   const [cv, setCv] = useState<File | null>(null);
   const [paymentProof, setPaymentProof] = useState<File | null>(null);
   const [isPremiumSelected, setIsPremiumSelected] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  useEffect(() => {
+    // Check authentication status
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setCheckingAuth(false);
+      }
+    );
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setCheckingAuth(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const candidateForm = useForm<z.infer<typeof candidateFormSchema>>({
     resolver: zodResolver(candidateFormSchema),
@@ -73,25 +98,161 @@ const Cadastro = () => {
     },
   });
 
-  const onCandidateSubmit = (values: z.infer<typeof candidateFormSchema>) => {
-    toast({
-      title: "Cadastro realizado!",
-      description: "Redirecionando para informações de pagamento...",
-    });
-    setTimeout(() => {
-      navigate("/confirmacao-pagamento");
-    }, 1500);
+  const onCandidateSubmit = async (values: z.infer<typeof candidateFormSchema>) => {
+    if (!user) {
+      toast({
+        title: "Erro",
+        description: "Você precisa estar autenticado. Redirecionando para login...",
+        variant: "destructive",
+      });
+      setTimeout(() => navigate("/auth"), 1500);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Create perfil
+      const { data: perfil, error: perfilError } = await supabase
+        .from("perfis")
+        .insert({
+          user_id: user.id,
+          nome_completo: values.fullName,
+          telefone: values.phone,
+          tipo_utilizador: "candidato",
+        })
+        .select()
+        .single();
+
+      if (perfilError) throw perfilError;
+
+      // Generate candidate number
+      const { data: numeroCandidato, error: numeroError } = await supabase
+        .rpc("gerar_numero_candidato");
+
+      if (numeroError) throw numeroError;
+
+      // Create candidato
+      const { error: candidatoError } = await supabase
+        .from("candidatos")
+        .insert({
+          perfil_id: perfil.id,
+          numero_candidato: numeroCandidato,
+          tipo_conta: values.isPremium ? "pro" : "basico",
+        });
+
+      if (candidatoError) throw candidatoError;
+
+      toast({
+        title: "Cadastro realizado!",
+        description: values.isPremium 
+          ? "Redirecionando para confirmação de pagamento..." 
+          : "Seu perfil foi criado com sucesso!",
+      });
+
+      setTimeout(() => {
+        navigate(values.isPremium ? "/confirmacao-pagamento" : "/perfil-candidato");
+      }, 1500);
+    } catch (error: any) {
+      console.error("Erro ao criar perfil:", error);
+      toast({
+        title: "Erro ao criar perfil",
+        description: error.message || "Ocorreu um erro ao criar seu perfil",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const onEmployerSubmit = (values: z.infer<typeof employerFormSchema>) => {
-    toast({
-      title: "Cadastro realizado!",
-      description: "Seu perfil de empregador foi criado com sucesso.",
-    });
-    setTimeout(() => {
-      navigate("/");
-    }, 1500);
+  const onEmployerSubmit = async (values: z.infer<typeof employerFormSchema>) => {
+    if (!user) {
+      toast({
+        title: "Erro",
+        description: "Você precisa estar autenticado. Redirecionando para login...",
+        variant: "destructive",
+      });
+      setTimeout(() => navigate("/auth"), 1500);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Create perfil
+      const { data: perfil, error: perfilError } = await supabase
+        .from("perfis")
+        .insert({
+          user_id: user.id,
+          nome_completo: values.employerName,
+          telefone: values.phone,
+          tipo_utilizador: "empregador",
+        })
+        .select()
+        .single();
+
+      if (perfilError) throw perfilError;
+
+      // Create empregador
+      const { error: empregadorError } = await supabase
+        .from("empregadores")
+        .insert({
+          perfil_id: perfil.id,
+          nome_empresa: values.companyName,
+          ramo_atuacao: values.companySector,
+        });
+
+      if (empregadorError) throw empregadorError;
+
+      toast({
+        title: "Cadastro realizado!",
+        description: "Seu perfil de empregador foi criado com sucesso.",
+      });
+
+      setTimeout(() => {
+        navigate("/perfil-empregador");
+      }, 1500);
+    } catch (error: any) {
+      console.error("Erro ao criar perfil:", error);
+      toast({
+        title: "Erro ao criar perfil",
+        description: error.message || "Ocorreu um erro ao criar seu perfil",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 flex items-center justify-center py-12 px-4">
+          <Card className="w-full max-w-md text-center">
+            <CardHeader>
+              <CardTitle>Autenticação Necessária</CardTitle>
+              <CardDescription>
+                Você precisa estar autenticado para completar seu cadastro
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={() => navigate("/auth")} className="w-full">
+                Ir para Login
+              </Button>
+            </CardContent>
+          </Card>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -224,7 +385,7 @@ const Cadastro = () => {
                       {/* Personal Data */}
                       <div className="space-y-4">
                         <div className="flex items-center gap-2 text-lg font-semibold">
-                          <User className="h-5 w-5 text-primary" />
+                          <UserIcon className="h-5 w-5 text-primary" />
                           <h3>Dados Pessoais</h3>
                         </div>
                         
