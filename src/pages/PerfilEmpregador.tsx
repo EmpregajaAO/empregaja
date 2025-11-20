@@ -78,7 +78,7 @@ const PerfilEmpregador = () => {
         setEmpregador(empregadorData);
       }
 
-      // Buscar candidatos Pro (recomendados) primeiro
+      // Buscar todos os candidatos (Pro primeiro, depois normais)
       const { data: candidatosData } = await supabase
         .from("candidatos")
         .select(`
@@ -88,15 +88,23 @@ const PerfilEmpregador = () => {
           perfil_id,
           perfis (
             nome_completo,
-            telefone
+            telefone,
+            status_validacao
           )
         `)
-        .eq("tipo_conta", "pro")
+        .eq("perfis.status_validacao", "aprovado")
         .order("created_at", { ascending: false });
 
       if (candidatosData) {
-        setCandidatos(candidatosData as Candidato[]);
-        setFilteredCandidatos(candidatosData as Candidato[]);
+        // Separar candidatos Pro dos demais
+        const candidatosPro = (candidatosData as Candidato[]).filter(c => c.tipo_conta === "pro");
+        const candidatosNormais = (candidatosData as Candidato[]).filter(c => c.tipo_conta !== "pro");
+        
+        // Concatenar: Pro primeiro, depois normais
+        const candidatosOrdenados = [...candidatosPro, ...candidatosNormais];
+        
+        setCandidatos(candidatosOrdenados);
+        setFilteredCandidatos(candidatosOrdenados);
       }
 
     } catch (error) {
@@ -108,10 +116,26 @@ const PerfilEmpregador = () => {
   };
 
   const handleFilter = (filters: any) => {
-    // Implementar lógica de filtro aqui
     console.log("Filtros aplicados:", filters);
-    // Por enquanto, apenas mantém os candidatos atuais
-    setFilteredCandidatos(candidatos);
+    
+    let filtered = [...candidatos];
+
+    // Aplicar filtros (adicione mais conforme necessário)
+    if (filters.nome) {
+      filtered = filtered.filter(c => 
+        c.perfis.nome_completo.toLowerCase().includes(filters.nome.toLowerCase())
+      );
+    }
+
+    if (filters.tipo_conta && filters.tipo_conta !== "todos") {
+      filtered = filtered.filter(c => c.tipo_conta === filters.tipo_conta);
+    }
+
+    // Sempre manter Pro primeiro, mesmo após filtros
+    const candidatosPro = filtered.filter(c => c.tipo_conta === "pro");
+    const candidatosNormais = filtered.filter(c => c.tipo_conta !== "pro");
+    
+    setFilteredCandidatos([...candidatosPro, ...candidatosNormais]);
   };
 
   if (loading) {
