@@ -20,6 +20,7 @@ interface Vaga {
   empresa: string;
   localidade: string;
   tipo_contrato: string;
+  origem: string | null;
   salario_min: number | null;
   salario_max: number | null;
   ativa: boolean;
@@ -112,6 +113,7 @@ export function AdminVagas() {
                 <TableHead>Empresa</TableHead>
                 <TableHead>Localização</TableHead>
                 <TableHead>Tipo</TableHead>
+                <TableHead>Origem</TableHead>
                 <TableHead>Salário</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Ações</TableHead>
@@ -135,6 +137,13 @@ export function AdminVagas() {
                       <Briefcase className="h-3 w-3" />
                       {vaga.tipo_contrato}
                     </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {vaga.origem ? (
+                      <Badge variant="secondary">{vaga.origem}</Badge>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">N/A</span>
+                    )}
                   </TableCell>
                   <TableCell className="text-sm">
                     {formatSalario(vaga.salario_min, vaga.salario_max)}

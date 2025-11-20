@@ -8,8 +8,8 @@ import Index from "./pages/Index";
 import Candidatos from "./pages/Candidatos";
 import Empregadores from "./pages/Empregadores";
 import Cursos from "./pages/Cursos";
-import Vagas from "./pages/Vagas";
 import VagasAgregadas from "./pages/VagasAgregadas";
+import VagaDetalhes from "./pages/VagaDetalhes";
 import PerfilCandidato from "./pages/PerfilCandidato";
 import PerfilEmpregador from "./pages/PerfilEmpregador";
 import SalaDeAula from "./pages/SalaDeAula";
@@ -34,7 +34,7 @@ const App = () => (
           <Route path="/empregadores" element={<Empregadores />} />
           <Route path="/cursos" element={<Cursos />} />
           <Route path="/vagas" element={<VagasAgregadas />} />
-          <Route path="/vagas-agregadas" element={<VagasAgregadas />} />
+          <Route path="/vaga/:id" element={<VagaDetalhes />} />
           <Route path="/perfil-candidato" element={<PerfilCandidato />} />
           <Route path="/perfil-empregador" element={<PerfilEmpregador />} />
           <Route path="/sala-de-aula/:courseId" element={<SalaDeAula />} />
