@@ -39,27 +39,28 @@ const Vagas = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <section className="py-20 bg-gradient-subtle">
-          <div className="container">
-            <div className="max-w-4xl mx-auto text-center space-y-8 mb-16">
-              <h1>Vagas Disponíveis</h1>
-              <p className="text-xl text-muted-foreground">
+        <section className="py-12 md:py-16 lg:py-20 bg-gradient-subtle px-4">
+          <div className="container max-w-7xl mx-auto">
+            <div className="max-w-4xl mx-auto text-center space-y-6 md:space-y-8 mb-8 md:mb-12 lg:mb-16">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl">Vagas Disponíveis</h1>
+              <p className="text-base md:text-lg lg:text-xl text-muted-foreground px-4">
                 Oportunidades de emprego atualizadas diariamente de empresas em todo Angola
               </p>
             </div>
 
             {!loading && !isAuthenticated && (
-              <Alert className="max-w-4xl mx-auto mb-8 border-primary/50 bg-primary/5">
-                <Lock className="h-5 w-5 text-primary" />
-                <AlertTitle className="text-lg font-semibold">Acesso Restrito</AlertTitle>
+              <Alert className="max-w-4xl mx-auto mb-6 md:mb-8 border-primary/50 bg-primary/5">
+                <Lock className="h-4 w-4 md:h-5 md:w-5 text-primary" />
+                <AlertTitle className="text-base md:text-lg font-semibold">Acesso Restrito</AlertTitle>
                 <AlertDescription className="mt-2 space-y-3">
-                  <p className="text-base">
+                  <p className="text-sm md:text-base">
                     As vagas de emprego estão disponíveis apenas para utilizadores registados. 
                     Faça login ou crie uma conta gratuita para visualizar todas as oportunidades.
                   </p>
                   <Button 
                     onClick={() => navigate("/cadastro")}
                     className="w-full sm:w-auto"
+                    size="default"
                   >
                     Fazer Login / Registar
                   </Button>

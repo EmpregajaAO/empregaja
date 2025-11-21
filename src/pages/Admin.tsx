@@ -49,65 +49,75 @@ export default function Admin() {
   return (
     <div className="min-h-screen bg-muted/30">
       <div className="border-b bg-background">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-3 md:py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Painel Administrativo
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">EmpregaJá - Gestão Completa</p>
+            <p className="text-xs md:text-sm text-muted-foreground mt-1">EmpregaJá - Gestão Completa</p>
           </div>
-          <Button variant="outline" onClick={handleLogout} className="gap-2">
+          <Button variant="outline" size="sm" onClick={handleLogout} className="gap-2 w-full sm:w-auto">
             <LogOut className="h-4 w-4" />
             Sair
           </Button>
         </div>
       </div>
 
-      <div className="container mx-auto py-8 px-4">
+      <div className="container mx-auto py-6 md:py-8 px-4">
 
       <Tabs defaultValue="dashboard" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 lg:w-auto">
-          <TabsTrigger value="dashboard" className="gap-2">
-            <TrendingUp className="h-4 w-4" />
-            Dashboard
-          </TabsTrigger>
-          <TabsTrigger value="comprovativos" className="gap-2">
-            <FileText className="h-4 w-4" />
-            Comprovativos
-          </TabsTrigger>
-          <TabsTrigger value="perfis" className="gap-2">
-            <UserCheck className="h-4 w-4" />
-            Perfis
-          </TabsTrigger>
-          <TabsTrigger value="vagas" className="gap-2">
-            <MapPin className="h-4 w-4" />
-            Vagas
-          </TabsTrigger>
-          <TabsTrigger value="gestao-cursos" className="gap-2">
-            <BookOpen className="h-4 w-4" />
-            Gestão Cursos
-          </TabsTrigger>
-          <TabsTrigger value="cursos" className="gap-2">
-            <BookOpen className="h-4 w-4" />
-            Pag. Cursos
-          </TabsTrigger>
-          <TabsTrigger value="funcionarios" className="gap-2">
-            <Briefcase className="h-4 w-4" />
-            Funcionários
-          </TabsTrigger>
-          <TabsTrigger value="salarios" className="gap-2">
-            <DollarSign className="h-4 w-4" />
-            Salários
-          </TabsTrigger>
-          <TabsTrigger value="promocoes" className="gap-2">
-            <Megaphone className="h-4 w-4" />
-            Promoções
-          </TabsTrigger>
-          <TabsTrigger value="notificacoes" className="gap-2">
-            <Bell className="h-4 w-4" />
-            Notificações
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <TabsList className="inline-flex w-auto min-w-full sm:grid sm:grid-cols-5 lg:grid-cols-10 gap-1">
+            <TabsTrigger value="dashboard" className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
+              <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Dashboard</span>
+              <span className="sm:hidden">Dash</span>
+            </TabsTrigger>
+            <TabsTrigger value="comprovativos" className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
+              <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Comprovativos</span>
+              <span className="sm:hidden">Comprov.</span>
+            </TabsTrigger>
+            <TabsTrigger value="perfis" className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
+              <UserCheck className="h-3 w-3 sm:h-4 sm:w-4" />
+              Perfis
+            </TabsTrigger>
+            <TabsTrigger value="vagas" className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
+              <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
+              Vagas
+            </TabsTrigger>
+            <TabsTrigger value="gestao-cursos" className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
+              <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Gestão Cursos</span>
+              <span className="sm:hidden">Gestão</span>
+            </TabsTrigger>
+            <TabsTrigger value="cursos" className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
+              <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Pag. Cursos</span>
+              <span className="sm:hidden">Cursos</span>
+            </TabsTrigger>
+            <TabsTrigger value="funcionarios" className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
+              <Briefcase className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Funcionários</span>
+              <span className="sm:hidden">Func.</span>
+            </TabsTrigger>
+            <TabsTrigger value="salarios" className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
+              <DollarSign className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Salários</span>
+              <span className="sm:hidden">Sal.</span>
+            </TabsTrigger>
+            <TabsTrigger value="promocoes" className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
+              <Megaphone className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Promoções</span>
+              <span className="sm:hidden">Promo</span>
+            </TabsTrigger>
+            <TabsTrigger value="notificacoes" className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
+              <Bell className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Notificações</span>
+              <span className="sm:hidden">Notif.</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="dashboard">
           <AdminDashboard />

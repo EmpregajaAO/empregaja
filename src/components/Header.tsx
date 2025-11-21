@@ -132,7 +132,7 @@ const Header = () => {
                   {user.email?.split("@")[0]}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="z-[100] bg-background border shadow-lg">
                 <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate(getUserProfileLink())}>
@@ -176,8 +176,8 @@ const Header = () => {
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="md:hidden border-t border-border bg-background/95 backdrop-blur">
-          <nav className="container flex flex-col gap-4 py-4">
+        <div className="md:hidden border-t border-border bg-background/95 backdrop-blur overflow-hidden">
+          <nav className="container flex flex-col gap-3 py-4 px-4">
             <Link
               to="/candidatos"
               className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
