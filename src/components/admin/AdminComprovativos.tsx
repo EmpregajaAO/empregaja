@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, XCircle, Clock, ExternalLink, Eye, Search, Filter, DollarSign, Users, TrendingUp } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
   TableBody,
@@ -30,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AdminTestPayment } from "./AdminTestPayment";
 
 interface Comprovativo {
   id: string;
@@ -367,9 +369,15 @@ export function AdminComprovativos() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Statistics Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <Tabs defaultValue="gestao" className="space-y-6">
+      <TabsList>
+        <TabsTrigger value="gestao">Gestão de Pagamentos</TabsTrigger>
+        <TabsTrigger value="teste">Criar Teste</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="gestao" className="space-y-6">
+        {/* Statistics Cards */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total de Pagamentos</CardTitle>
@@ -611,6 +619,11 @@ export function AdminComprovativos() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+      </TabsContent>
+
+      <TabsContent value="teste">
+        <AdminTestPayment />
+      </TabsContent>
+    </Tabs>
   );
 }
