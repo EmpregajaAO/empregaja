@@ -28,6 +28,9 @@ import { AdminCursos } from "@/components/admin/AdminCursos";
 import { AdminPromocoes } from "@/components/admin/AdminPromocoes";
 import { AdminComprovativos } from "@/components/admin/AdminComprovativos";
 import { AdminGestãoCursos } from "@/components/admin/AdminGestãoCursos";
+import { AdminModulos } from "@/components/admin/AdminModulos";
+import { AdminAulas } from "@/components/admin/AdminAulas";
+import { AdminAvaliacoes } from "@/components/admin/AdminAvaliacoes";
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -67,7 +70,7 @@ export default function Admin() {
 
       <Tabs defaultValue="dashboard" className="space-y-6">
         <div className="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
-          <TabsList className="inline-flex w-auto min-w-full sm:grid sm:grid-cols-5 lg:grid-cols-10 gap-1">
+          <TabsList className="inline-flex w-auto min-w-full sm:grid sm:grid-cols-6 lg:grid-cols-13 gap-1">
             <TabsTrigger value="dashboard" className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
               <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="hidden sm:inline">Dashboard</span>
@@ -116,6 +119,19 @@ export default function Admin() {
               <span className="hidden sm:inline">Notificações</span>
               <span className="sm:hidden">Notif.</span>
             </TabsTrigger>
+            <TabsTrigger value="modulos" className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
+              <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
+              Módulos
+            </TabsTrigger>
+            <TabsTrigger value="aulas" className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
+              <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+              Aulas
+            </TabsTrigger>
+            <TabsTrigger value="avaliacoes" className="gap-1 sm:gap-2 text-xs sm:text-sm whitespace-nowrap">
+              <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Avaliações</span>
+              <span className="sm:hidden">Aval.</span>
+            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -157,6 +173,18 @@ export default function Admin() {
 
         <TabsContent value="notificacoes">
           <AdminNotificacoes />
+        </TabsContent>
+
+        <TabsContent value="modulos">
+          <AdminModulos />
+        </TabsContent>
+
+        <TabsContent value="aulas">
+          <AdminAulas />
+        </TabsContent>
+
+        <TabsContent value="avaliacoes">
+          <AdminAvaliacoes />
         </TabsContent>
       </Tabs>
       </div>
