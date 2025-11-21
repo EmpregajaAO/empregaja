@@ -1,0 +1,35 @@
+{
+  "name": "EmpregaJá - Plataforma de Emprego em Angola",
+  "short_name": "EmpregaJá",
+  "description": "Crie seu perfil profissional, gere seu CV e seja encontrado pelas melhores empresas de Angola",
+  "theme_color": "#0B7BDA",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "lang": "pt-PT",
+  "categories": ["business", "productivity", "education"],
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
+}
