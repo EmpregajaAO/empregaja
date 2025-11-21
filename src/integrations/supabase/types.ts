@@ -149,6 +149,63 @@ export type Database = {
         }
         Relationships: []
       }
+      entrevistas: {
+        Row: {
+          candidato_id: string
+          created_at: string | null
+          data_entrevista: string | null
+          empregador_id: string
+          id: string
+          local_ou_link: string | null
+          observacoes: string | null
+          status: string | null
+          tipo_entrevista: string | null
+          updated_at: string | null
+          vaga_id: string | null
+        }
+        Insert: {
+          candidato_id: string
+          created_at?: string | null
+          data_entrevista?: string | null
+          empregador_id: string
+          id?: string
+          local_ou_link?: string | null
+          observacoes?: string | null
+          status?: string | null
+          tipo_entrevista?: string | null
+          updated_at?: string | null
+          vaga_id?: string | null
+        }
+        Update: {
+          candidato_id?: string
+          created_at?: string | null
+          data_entrevista?: string | null
+          empregador_id?: string
+          id?: string
+          local_ou_link?: string | null
+          observacoes?: string | null
+          status?: string | null
+          tipo_entrevista?: string | null
+          updated_at?: string | null
+          vaga_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "entrevistas_candidato_id_fkey"
+            columns: ["candidato_id"]
+            isOneToOne: false
+            referencedRelation: "candidatos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entrevistas_empregador_id_fkey"
+            columns: ["empregador_id"]
+            isOneToOne: false
+            referencedRelation: "empregadores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       perfis: {
         Row: {
           avatar_url: string | null
@@ -232,6 +289,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_interview_with_employer: {
+        Args: { _candidato_user_id: string; _empregador_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
