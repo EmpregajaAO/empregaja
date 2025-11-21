@@ -153,6 +153,21 @@ All colors MUST be HSL.
     overflow-x: hidden;
   }
 
+  /* Add padding to main content to prevent bottom nav overlap */
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  main {
+    padding-bottom: 5rem; /* Space for bottom nav on mobile */
+  }
+
+  @media (min-width: 768px) {
+    main {
+      padding-bottom: 0;
+    }
+  }
+
   /* Ensure images are responsive */
   img {
     max-width: 100%;
@@ -172,6 +187,43 @@ All colors MUST be HSL.
     }
     100% {
       transform: translateX(-50%);
+    }
+  }
+
+  /* PWA Install Animation */
+  @keyframes slide-in-from-bottom-4 {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .animate-in {
+    animation: slide-in-from-bottom-4 0.3s ease-out;
+  }
+
+  .slide-in-from-bottom-4 {
+    animation: slide-in-from-bottom-4 0.3s ease-out;
+  }
+
+  /* Smooth transitions for all interactive elements */
+  button, a, input, textarea, select {
+    @apply transition-all duration-200;
+  }
+
+  /* Improve tap highlighting on mobile */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Safe area insets for notched devices */
+  @supports (padding: env(safe-area-inset-bottom)) {
+    body {
+      padding-bottom: env(safe-area-inset-bottom);
     }
   }
 }

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut, User } from "lucide-react";
+import { Menu, X, LogOut, User, Download } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser, Session } from "@supabase/supabase-js";
@@ -218,6 +218,14 @@ const Header = () => {
                 <Button variant="outline" size="sm" className="w-full gap-2 border-primary/20 hover:bg-primary/10">
                   <User className="h-4 w-4" />
                   Admin Login
+                </Button>
+              </Link>
+            </div>
+            <div className="pb-2">
+              <Link to="/instalar" onClick={() => setIsMenuOpen(false)}>
+                <Button variant="hero" size="sm" className="w-full gap-2">
+                  <Download className="h-4 w-4" />
+                  Instalar App
                 </Button>
               </Link>
             </div>
