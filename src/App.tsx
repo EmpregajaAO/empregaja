@@ -19,14 +19,9 @@ import Privacidade from "./pages/Privacidade";
 import Sobre from "./pages/Sobre";
 import Cadastro from "./pages/Cadastro";
 import Auth from "./pages/Auth";
-import Admin from "./pages/Admin";
-import AdminLogin from "./pages/AdminLogin";
-import AdminInserirVagas from "./pages/AdminInserirVagas";
-import AdminQuestoes from "./pages/AdminQuestoes";
 import Instalar from "./pages/Instalar";
 import PaymentConfirmation from "./components/PaymentConfirmation";
 import NotFound from "./pages/NotFound";
-import { AdminRoute } from "@/components/AdminRoute";
 
 const queryClient = new QueryClient();
 
@@ -51,10 +46,6 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/instalar" element={<Instalar />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
-          <Route path="/admin/inserir-vagas" element={<AdminRoute><AdminInserirVagas /></AdminRoute>} />
-          <Route path="/admin/questoes/:assessmentId" element={<AdminQuestoes />} />
           <Route path="/confirmacao-pagamento" element={<PaymentConfirmation />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
