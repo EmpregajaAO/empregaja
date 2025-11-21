@@ -4,8 +4,8 @@ import { Briefcase, Mail, Phone, Facebook, Instagram, Linkedin } from "lucide-re
 const Footer = () => {
   return (
     <footer className="w-full border-t border-border bg-muted/50">
-      <div className="container py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="container py-8 md:py-12 px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -118,8 +118,8 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-border">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+        <div className="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-border">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4 text-xs md:text-sm text-muted-foreground text-center">
             <p>© 2025 EmpregaJá. Todos os direitos reservados.</p>
           </div>
         </div>

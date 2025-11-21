@@ -121,6 +121,11 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    overflow-x: hidden;
+  }
+
+  html {
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -128,15 +133,37 @@ All colors MUST be HSL.
   }
 
   h1 {
-    @apply text-4xl md:text-5xl lg:text-6xl;
+    @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl;
+    line-height: 1.2;
   }
 
   h2 {
-    @apply text-3xl md:text-4xl lg:text-5xl;
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl;
+    line-height: 1.2;
   }
 
   h3 {
-    @apply text-2xl md:text-3xl;
+    @apply text-xl sm:text-2xl md:text-3xl;
+    line-height: 1.3;
+  }
+
+  /* Prevent horizontal scroll on all containers */
+  .container {
+    @apply max-w-7xl mx-auto;
+    overflow-x: hidden;
+  }
+
+  /* Ensure images are responsive */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Better touch targets on mobile */
+  @media (max-width: 768px) {
+    button, a {
+      min-height: 44px;
+    }
   }
 
   @keyframes scroll {

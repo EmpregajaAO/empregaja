@@ -46,18 +46,18 @@ const Cursos = () => {
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-muted/20">
       <Header />
       
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="text-center mb-12 space-y-4">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+      <main className="flex-1 container mx-auto px-4 py-6 md:py-8">
+        <div className="text-center mb-8 md:mb-12 space-y-3 md:space-y-4">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Catálogo de Cursos
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base md:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
             50 cursos profissionais com certificado incluso. Aprenda no seu ritmo com texto, vídeo e áudio.
           </p>
         </div>
 
-        <div className="mb-8 space-y-4">
-          <div className="flex flex-col md:flex-row gap-4">
+        <div className="mb-6 md:mb-8 space-y-3 md:space-y-4">
+          <div className="flex flex-col gap-3 md:gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -69,7 +69,7 @@ const Cursos = () => {
             </div>
 
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-full md:w-[250px]">
+              <SelectTrigger className="w-full">
                 <Filter className="h-4 w-4 mr-2" />
                 <SelectValue />
               </SelectTrigger>
@@ -83,7 +83,7 @@ const Cursos = () => {
             </Select>
 
             <Select value={priceFilter} onValueChange={setPriceFilter}>
-              <SelectTrigger className="w-full md:w-[200px]">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Preço" />
               </SelectTrigger>
               <SelectContent>

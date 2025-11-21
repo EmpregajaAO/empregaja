@@ -8,18 +8,18 @@ const Sobre = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <section className="py-20 bg-gradient-subtle">
-          <div className="container">
-            <div className="max-w-4xl mx-auto space-y-16">
-              <div className="text-center space-y-8">
-                <h1>Sobre o EmpregaJá</h1>
-                <p className="text-xl text-muted-foreground">
+        <section className="py-12 md:py-16 lg:py-20 bg-gradient-subtle px-4">
+          <div className="container max-w-7xl mx-auto">
+            <div className="max-w-4xl mx-auto space-y-10 md:space-y-16">
+              <div className="text-center space-y-6 md:space-y-8">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl">Sobre o EmpregaJá</h1>
+                <p className="text-base md:text-lg lg:text-xl text-muted-foreground px-4">
                   Somos uma plataforma angolana dedicada a conectar talentos com oportunidades, 
                   transformando o mercado de trabalho através da tecnologia e inovação.
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid sm:grid-cols-2 gap-6 md:gap-8">
                 <Card>
                   <CardHeader>
                     <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center mb-4">
@@ -76,9 +76,9 @@ const Sobre = () => {
                 </Card>
               </div>
 
-              <div className="bg-card p-8 rounded-lg border">
-                <h2 className="text-2xl font-bold mb-4">Nossa História</h2>
-                <p className="text-muted-foreground mb-4">
+              <div className="bg-card p-6 md:p-8 rounded-lg border">
+                <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">Nossa História</h2>
+                <p className="text-sm md:text-base text-muted-foreground mb-3 md:mb-4">
                   O EmpregaJá nasceu da necessidade de modernizar e democratizar o acesso ao mercado 
                   de trabalho em Angola. Percebemos que muitos profissionais talentosos encontravam 
                   dificuldades em destacar suas competências e que as empresas precisavam de 
