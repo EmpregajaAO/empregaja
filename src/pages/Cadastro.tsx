@@ -109,6 +109,16 @@ const Cadastro = () => {
       return;
     }
 
+    // Validate payment proof for premium accounts
+    if (values.isPremium && !paymentProof) {
+      toast({
+        title: "Erro",
+        description: "Por favor, anexe o comprovativo de pagamento.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       // Create perfil
@@ -132,20 +142,51 @@ const Cadastro = () => {
       if (numeroError) throw numeroError;
 
       // Create candidato
-      const { error: candidatoError } = await supabase
+      const { data: candidato, error: candidatoError } = await supabase
         .from("candidatos")
         .insert({
           perfil_id: perfil.id,
           numero_candidato: numeroCandidato,
           tipo_conta: values.isPremium ? "pro" : "basico",
-        });
+        })
+        .select()
+        .single();
 
       if (candidatoError) throw candidatoError;
+
+      // Upload payment proof if premium
+      if (values.isPremium && paymentProof) {
+        const fileExt = paymentProof.name.split('.').pop();
+        const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+        const filePath = `${user.id}/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('comprovativos')
+          .upload(filePath, paymentProof);
+
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('comprovativos')
+          .getPublicUrl(filePath);
+
+        // Create comprovativo record
+        await supabase
+          .from("comprovativos_pagamento")
+          .insert({
+            candidato_id: candidato.id,
+            comprovativo_url: publicUrl,
+            tipo_servico: "Ativação de Conta Premium",
+            valor: 5000,
+            status: "pendente"
+          });
+      }
 
       toast({
         title: "Cadastro realizado com sucesso!",
         description: values.isPremium 
-          ? "A redirecionar para confirmação de pagamento..." 
+          ? "Seu comprovativo foi enviado. Aguarde validação." 
           : "O seu perfil foi criado com sucesso!",
       });
 
