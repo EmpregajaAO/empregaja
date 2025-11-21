@@ -14,16 +14,239 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      candidatos: {
+        Row: {
+          area_interesse: string[] | null
+          carta_apresentacao: string | null
+          certificacoes: string[] | null
+          cidade: string | null
+          created_at: string | null
+          cv_url: string | null
+          data_nascimento: string | null
+          disponibilidade: string | null
+          email: string
+          experiencia_anos: number | null
+          genero: string | null
+          habilidades: string[] | null
+          id: string
+          idiomas: string[] | null
+          linkedin_url: string | null
+          nivel_educacao: string | null
+          nome_completo: string
+          portfolio_url: string | null
+          pretensao_salarial: number | null
+          provincia: string | null
+          telefone: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          area_interesse?: string[] | null
+          carta_apresentacao?: string | null
+          certificacoes?: string[] | null
+          cidade?: string | null
+          created_at?: string | null
+          cv_url?: string | null
+          data_nascimento?: string | null
+          disponibilidade?: string | null
+          email: string
+          experiencia_anos?: number | null
+          genero?: string | null
+          habilidades?: string[] | null
+          id?: string
+          idiomas?: string[] | null
+          linkedin_url?: string | null
+          nivel_educacao?: string | null
+          nome_completo: string
+          portfolio_url?: string | null
+          pretensao_salarial?: number | null
+          provincia?: string | null
+          telefone?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          area_interesse?: string[] | null
+          carta_apresentacao?: string | null
+          certificacoes?: string[] | null
+          cidade?: string | null
+          created_at?: string | null
+          cv_url?: string | null
+          data_nascimento?: string | null
+          disponibilidade?: string | null
+          email?: string
+          experiencia_anos?: number | null
+          genero?: string | null
+          habilidades?: string[] | null
+          id?: string
+          idiomas?: string[] | null
+          linkedin_url?: string | null
+          nivel_educacao?: string | null
+          nome_completo?: string
+          portfolio_url?: string | null
+          pretensao_salarial?: number | null
+          provincia?: string | null
+          telefone?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      empregadores: {
+        Row: {
+          created_at: string | null
+          descricao_empresa: string | null
+          email_empresa: string
+          id: string
+          localizacao: string | null
+          logo_url: string | null
+          nome_empresa: string
+          numero_funcionarios: string | null
+          provincia: string | null
+          setor_atividade: string | null
+          telefone_empresa: string | null
+          tipo_conta: string | null
+          updated_at: string | null
+          user_id: string
+          verificado: boolean | null
+          website: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          descricao_empresa?: string | null
+          email_empresa: string
+          id?: string
+          localizacao?: string | null
+          logo_url?: string | null
+          nome_empresa: string
+          numero_funcionarios?: string | null
+          provincia?: string | null
+          setor_atividade?: string | null
+          telefone_empresa?: string | null
+          tipo_conta?: string | null
+          updated_at?: string | null
+          user_id: string
+          verificado?: boolean | null
+          website?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          descricao_empresa?: string | null
+          email_empresa?: string
+          id?: string
+          localizacao?: string | null
+          logo_url?: string | null
+          nome_empresa?: string
+          numero_funcionarios?: string | null
+          provincia?: string | null
+          setor_atividade?: string | null
+          telefone_empresa?: string | null
+          tipo_conta?: string | null
+          updated_at?: string | null
+          user_id?: string
+          verificado?: boolean | null
+          website?: string | null
+        }
+        Relationships: []
+      }
+      perfis: {
+        Row: {
+          avatar_url: string | null
+          cidade: string | null
+          created_at: string | null
+          data_nascimento: string | null
+          disponibilidade: string | null
+          email: string | null
+          genero: string | null
+          id: string
+          linkedin_url: string | null
+          nome_completo: string | null
+          portfolio_url: string | null
+          provincia: string | null
+          sobre_mim: string | null
+          telefone: string | null
+          tipo_conta: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          cidade?: string | null
+          created_at?: string | null
+          data_nascimento?: string | null
+          disponibilidade?: string | null
+          email?: string | null
+          genero?: string | null
+          id: string
+          linkedin_url?: string | null
+          nome_completo?: string | null
+          portfolio_url?: string | null
+          provincia?: string | null
+          sobre_mim?: string | null
+          telefone?: string | null
+          tipo_conta?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          cidade?: string | null
+          created_at?: string | null
+          data_nascimento?: string | null
+          disponibilidade?: string | null
+          email?: string | null
+          genero?: string | null
+          id?: string
+          linkedin_url?: string | null
+          nome_completo?: string | null
+          portfolio_url?: string | null
+          provincia?: string | null
+          sobre_mim?: string | null
+          telefone?: string | null
+          tipo_conta?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role:
+        | "admin"
+        | "moderator"
+        | "candidato"
+        | "empregador"
+        | "funcionario"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +373,14 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: [
+        "admin",
+        "moderator",
+        "candidato",
+        "empregador",
+        "funcionario",
+      ],
+    },
   },
 } as const
