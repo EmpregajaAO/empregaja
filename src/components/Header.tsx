@@ -59,7 +59,7 @@ const Header = () => {
       const { data } = await supabase
         .from("perfis")
         .select("tipo_utilizador")
-        .eq("user_id", userId)
+        .eq("id", userId)
         .maybeSingle();
       
       setUserType(data?.tipo_utilizador || null);
