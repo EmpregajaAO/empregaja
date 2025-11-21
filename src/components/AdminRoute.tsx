@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 interface AdminRouteProps {
   children: React.ReactNode;
@@ -16,24 +17,37 @@ export function AdminRoute({ children }: AdminRouteProps) {
 
   const checkAdminAccess = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { session } } = await supabase.auth.getSession();
       
-      if (!user) {
+      if (!session) {
         setIsAdmin(false);
         setLoading(false);
         return;
       }
 
-      const { data: roleData } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.id)
-        .eq("role", "admin")
-        .maybeSingle();
+      // Call the edge function to validate admin status securely
+      const { data, error } = await supabase.functions.invoke('validate-admin');
 
-      setIsAdmin(!!roleData);
+      if (error) {
+        console.error("Error validating admin:", error);
+        toast({
+          title: "Erro de Autenticação",
+          description: "Falha ao validar permissões de administrador.",
+          variant: "destructive",
+        });
+        setIsAdmin(false);
+        setLoading(false);
+        return;
+      }
+
+      setIsAdmin(data?.isAdmin === true);
     } catch (error) {
       console.error("Erro ao verificar acesso admin:", error);
+      toast({
+        title: "Erro de Autenticação",
+        description: "Falha ao conectar ao servidor de autenticação.",
+        variant: "destructive",
+      });
       setIsAdmin(false);
     } finally {
       setLoading(false);

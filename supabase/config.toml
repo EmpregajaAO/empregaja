@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.inserir-vagas-manuais]
 verify_jwt = false
+
+[functions.validate-admin]
+verify_jwt = true
