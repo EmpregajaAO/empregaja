@@ -12,12 +12,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 interface Question {
   id: string;
   question_text: string;
-  option_a: string | null;
-  option_b: string | null;
-  option_c: string | null;
-  option_d: string | null;
+  options: any;
   correct_answer: string;
-  explanation: string | null;
   points: number;
 }
 
@@ -27,7 +23,6 @@ interface Assessment {
   description: string | null;
   passing_score: number;
   time_limit_minutes: number | null;
-  max_attempts: number;
 }
 
 interface ModuleAssessmentProps {
@@ -180,30 +175,12 @@ export function ModuleAssessment({ moduleId, enrollmentId, onComplete, onBack }:
     );
   }
 
-  if (!assessment) {
+  if (!assessment || loading) {
     return (
       <Card>
         <CardContent className="py-12 text-center">
           <AlertCircle className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-          <p className="text-muted-foreground">Avaliação não disponível para este módulo</p>
-          <Button onClick={onBack} className="mt-4">
-            <ChevronLeft className="h-4 w-4 mr-2" />
-            Voltar
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (attempts >= assessment.max_attempts) {
-    return (
-      <Card>
-        <CardContent className="py-12 text-center">
-          <XCircle className="h-16 w-16 mx-auto text-destructive mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Tentativas Esgotadas</h2>
-          <p className="text-muted-foreground">
-            Você atingiu o número máximo de tentativas ({assessment.max_attempts})
-          </p>
+          <p className="text-muted-foreground">Carregando avaliação...</p>
           <Button onClick={onBack} className="mt-4">
             <ChevronLeft className="h-4 w-4 mr-2" />
             Voltar
@@ -226,7 +203,6 @@ export function ModuleAssessment({ moduleId, enrollmentId, onComplete, onBack }:
             {assessment.time_limit_minutes && (
               <span>Tempo Limite: {assessment.time_limit_minutes} minutos</span>
             )}
-            <span>Tentativa: {attempts + 1} / {assessment.max_attempts}</span>
           </div>
         </CardHeader>
       </Card>
@@ -250,7 +226,7 @@ export function ModuleAssessment({ moduleId, enrollmentId, onComplete, onBack }:
                 <p className="text-muted-foreground">
                   Necessário: {assessment.passing_score}%
                 </p>
-                {attempts + 1 < assessment.max_attempts && (
+                {attempts + 1 < 3 && (
                   <Button onClick={() => window.location.reload()} className="mt-4">
                     Tentar Novamente
                   </Button>
@@ -277,11 +253,6 @@ export function ModuleAssessment({ moduleId, enrollmentId, onComplete, onBack }:
                         {!isCorrect && (
                           <div className="text-green-600">
                             Resposta correta: {question.correct_answer}
-                          </div>
-                        )}
-                        {question.explanation && (
-                          <div className="text-muted-foreground mt-2">
-                            {question.explanation}
                           </div>
                         )}
                       </div>

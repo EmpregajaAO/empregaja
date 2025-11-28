@@ -23,7 +23,7 @@ interface Empregador {
 
 interface Candidato {
   id: string;
-  numero_candidato: string;
+  numero_candidato?: string;
   tipo_conta: 'basico' | 'ativo' | 'pro';
   perfil_id: string;
   perfis: {
@@ -95,10 +95,9 @@ const PerfilEmpregador = () => {
         .from("candidatos")
         .select(`
           id,
-          numero_candidato,
           tipo_conta,
           perfil_id,
-          perfis (
+          perfis!inner (
             nome_completo,
             telefone,
             status_validacao
@@ -109,14 +108,14 @@ const PerfilEmpregador = () => {
 
       if (candidatosData) {
         // Separar candidatos Pro dos demais
-        const candidatosPro = (candidatosData as Candidato[]).filter(c => c.tipo_conta === "pro");
-        const candidatosNormais = (candidatosData as Candidato[]).filter(c => c.tipo_conta !== "pro");
+        const candidatosPro = (candidatosData as any[]).filter((c: any) => c.tipo_conta === "pro");
+        const candidatosNormais = (candidatosData as any[]).filter((c: any) => c.tipo_conta !== "pro");
         
         // Concatenar: Pro primeiro, depois normais
         const candidatosOrdenados = [...candidatosPro, ...candidatosNormais];
         
-        setCandidatos(candidatosOrdenados);
-        setFilteredCandidatos(candidatosOrdenados);
+        setCandidatos(candidatosOrdenados as any[]);
+        setFilteredCandidatos(candidatosOrdenados as any[]);
       }
 
     } catch (error) {

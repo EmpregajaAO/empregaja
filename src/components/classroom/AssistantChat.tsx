@@ -46,8 +46,8 @@ export function AssistantChat({ enrollmentId, courseName, onClose }: AssistantCh
       // Salvar mensagem do usuário
       await supabase.from("course_chat_messages").insert({
         enrollment_id: enrollmentId,
-        message_text: input,
-        sender_role: "student"
+        message: input,
+        sender_type: "student"
       });
 
       // Chamar edge function para obter resposta da IA
@@ -82,8 +82,8 @@ export function AssistantChat({ enrollmentId, courseName, onClose }: AssistantCh
       // Salvar resposta do assistente
       await supabase.from("course_chat_messages").insert({
         enrollment_id: enrollmentId,
-        message_text: data.response,
-        sender_role: "assistant"
+        message: data.response,
+        sender_type: "assistant"
       });
 
     } catch (error) {

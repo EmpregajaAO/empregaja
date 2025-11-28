@@ -15,7 +15,7 @@ import CandidateChats from "@/components/candidate/CandidateChats";
 
 interface Candidato {
   id: string;
-  numero_candidato: string;
+  numero_candidato?: string;
   tipo_conta: string;
   cv_url: string | null;
   perfil_id: string;
@@ -29,7 +29,7 @@ interface Candidato {
 
 interface Visualizacao {
   id: string;
-  visualizado_em: string;
+  viewed_at: string;
   empregadores: {
     nome_empresa: string;
     ramo_atuacao: string;
@@ -61,12 +61,12 @@ export default function PerfilCandidato() {
         return;
       }
 
-      // Buscar dados do candidato
+      //Buscar dados do candidato (sem numero_candidato temporariamente)
       const { data: candidatoData, error: candidatoError } = await supabase
         .from("candidatos")
         .select(`
           *,
-          perfis (
+          perfis!inner (
             id,
             nome_completo,
             telefone,
@@ -103,7 +103,7 @@ export default function PerfilCandidato() {
           )
         `)
         .eq("candidato_id", candidatoData.id)
-        .order("visualizado_em", { ascending: false });
+        .order("viewed_at", { ascending: false });
 
       if (visualizacoesError) throw visualizacoesError;
       setVisualizacoes(visualizacoesData || []);

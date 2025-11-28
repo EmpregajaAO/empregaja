@@ -535,6 +535,7 @@ export type Database = {
           logo_url: string | null
           nome_empresa: string
           numero_funcionarios: string | null
+          perfil_id: string | null
           provincia: string | null
           ramo_atuacao: string | null
           setor_atividade: string | null
@@ -554,6 +555,7 @@ export type Database = {
           logo_url?: string | null
           nome_empresa: string
           numero_funcionarios?: string | null
+          perfil_id?: string | null
           provincia?: string | null
           ramo_atuacao?: string | null
           setor_atividade?: string | null
@@ -573,6 +575,7 @@ export type Database = {
           logo_url?: string | null
           nome_empresa?: string
           numero_funcionarios?: string | null
+          perfil_id?: string | null
           provincia?: string | null
           ramo_atuacao?: string | null
           setor_atividade?: string | null
@@ -583,7 +586,15 @@ export type Database = {
           verificado?: boolean | null
           website?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "empregadores_perfil_id_fkey"
+            columns: ["perfil_id"]
+            isOneToOne: false
+            referencedRelation: "perfis"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       entrevistas: {
         Row: {
@@ -1133,6 +1144,10 @@ export type Database = {
       }
     }
     Functions: {
+      calculate_course_progress: {
+        Args: { p_enrollment_id: string }
+        Returns: number
+      }
       gerar_numero_candidato: { Args: never; Returns: string }
       has_interview_with_employer: {
         Args: { _candidato_user_id: string; _empregador_id: string }

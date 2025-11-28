@@ -121,10 +121,11 @@ const Cadastro = () => {
 
     setLoading(true);
     try {
-      // Create perfil
-      const { data: perfil, error: perfilError } = await supabase
+      // Create perfil with correct ID
+      const { data: perfil, error: perfilError} = await supabase
         .from("perfis")
         .insert({
+          id: user.id,
           user_id: user.id,
           nome_completo: values.fullName,
           telefone: values.phone,
@@ -141,11 +142,14 @@ const Cadastro = () => {
 
       if (numeroError) throw numeroError;
 
-      // Create candidato
+      // Create candidato with user_id and perfil_id
       const { data: candidato, error: candidatoError } = await supabase
         .from("candidatos")
         .insert({
+          user_id: user.id,
           perfil_id: perfil.id,
+          nome_completo: values.fullName,
+          email: user.email || "",
           numero_candidato: numeroCandidato,
           tipo_conta: values.isPremium ? "pro" : "basico",
         })
@@ -218,10 +222,11 @@ const Cadastro = () => {
 
     setLoading(true);
     try {
-      // Create perfil
+      // Create perfil with correct ID
       const { data: perfil, error: perfilError } = await supabase
         .from("perfis")
         .insert({
+          id: user.id,
           user_id: user.id,
           nome_completo: values.employerName,
           telefone: values.phone,
@@ -232,12 +237,14 @@ const Cadastro = () => {
 
       if (perfilError) throw perfilError;
 
-      // Create empregador
+      // Create empregador with user_id and perfil_id
       const { error: empregadorError } = await supabase
         .from("empregadores")
         .insert({
+          user_id: user.id,
           perfil_id: perfil.id,
           nome_empresa: values.companyName,
+          email_empresa: user.email || "",
           ramo_atuacao: values.companySector,
         });
 
