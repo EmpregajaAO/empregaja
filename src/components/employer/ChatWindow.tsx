@@ -13,7 +13,7 @@ interface ChatWindowProps {
 
 interface Mensagem {
   id: string;
-  conteudo: string;
+  mensagem: string;
   created_at: string;
   remetente_id: string;
   lida: boolean;
@@ -143,7 +143,7 @@ const ChatWindow = ({ chatId, userPerfilId }: ChatWindowProps) => {
       const { error } = await supabase.from("mensagens").insert({
         chat_id: chatId,
         remetente_id: perfilId,
-        conteudo: novaMensagem.trim(),
+        mensagem: novaMensagem.trim(),
       });
 
       if (error) throw error;
@@ -188,7 +188,7 @@ const ChatWindow = ({ chatId, userPerfilId }: ChatWindowProps) => {
                       : "bg-muted"
                   }`}
                 >
-                  <p className="text-sm">{msg.conteudo}</p>
+                  <p className="text-sm">{msg.mensagem}</p>
                   <p className="text-xs opacity-70 mt-1">
                     {new Date(msg.created_at).toLocaleTimeString("pt-PT", {
                       hour: "2-digit",

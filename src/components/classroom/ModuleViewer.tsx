@@ -101,7 +101,7 @@ export function ModuleViewer({ module, enrollmentId, onProgressUpdate }: ModuleV
   const markLessonComplete = async (lessonId: string) => {
     try {
       const { error } = await supabase
-        .from("student_progress")
+        .from("lesson_progress")
         .upsert({
           enrollment_id: enrollmentId,
           lesson_id: lessonId,
